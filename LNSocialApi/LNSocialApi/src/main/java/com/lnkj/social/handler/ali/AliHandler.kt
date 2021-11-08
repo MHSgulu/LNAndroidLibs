@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Message
 import com.alipay.sdk.app.AuthTask
 import com.alipay.sdk.app.PayTask
+import com.lnkj.social.PlatformManager
 import com.lnkj.social.callback.AuthCallback
 import com.lnkj.social.callback.OperationCallback
 import com.lnkj.social.callback.PayCallback
@@ -64,6 +65,7 @@ class AliHandler(context: Context, config: PlatformConfig) : SSOHandler() {
         get() = true
 
     override fun pay(type: PlatformType, content: PayContent, callback: OperationCallback) {
+        setPlatCurrentHandler(callback)
         if (mContext !is Activity) {
             callback.onErrors?.invoke(
                 type, SocialConstants.CONTEXT_ERROR,
@@ -97,6 +99,7 @@ class AliHandler(context: Context, config: PlatformConfig) : SSOHandler() {
     }
 
     override fun authorize(type: PlatformType, callback: OperationCallback, content: AuthContent?) {
+        setPlatCurrentHandler(callback)
         if (mContext !is Activity) {
             callback.onErrors?.invoke(
                 type, SocialConstants.CONTEXT_ERROR,
@@ -210,6 +213,20 @@ class AliHandler(context: Context, config: PlatformConfig) : SSOHandler() {
             }
         }
         return map
+    }
+
+    /**
+     * 设置PlatformManager.currentHandler,用于回调
+     */
+    private fun setPlatCurrentHandler(callback: OperationCallback) {
+        if(callback is PayCallback) {
+            mPayCallback = callback
+        }
+        if(callback is AuthCallback){
+            mAuthCallback = callback
+        }
+//    PlatformManager.currentHandlerMap[this.hashCode()] = this
+        PlatformManager.currentHandler = this
     }
 
 }
