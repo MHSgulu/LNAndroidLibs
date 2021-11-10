@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
+import com.blankj.utilcode.util.FragmentUtils
+import com.blankj.utilcode.util.KeyboardUtils
+import com.blankj.utilcode.util.ToastUtils
 import com.itxca.msa.IMsa
 import com.itxca.msa.msa
 import com.lnkj.libs.net.AppException
@@ -31,7 +34,6 @@ abstract class BaseActivity<VM: BaseViewModel, VB : ViewBinding>: AppCompatActiv
     }
 
     private fun init(savedInstanceState: Bundle?) {
-        registerUiChange()
         initView(savedInstanceState)
         createObserver()
     }
@@ -46,25 +48,24 @@ abstract class BaseActivity<VM: BaseViewModel, VB : ViewBinding>: AppCompatActiv
     }
 
 
-    /**
-     * 注册UI 事件
-     */
-    private fun registerUiChange() {
-        //显示弹窗
-        vm.uiState.showDialog.observeInActivity(this) {
-            showLoading(it)
-        }
-        //关闭弹窗
-        vm.uiState.dismissDialog.observeInActivity(this) {
-            dismissLoading()
-        }
-        // 错误处理
-        vm.uiState.error.observeInActivity(this){
-            onError(it)
-        }
+    override fun onPause() {
+        super.onPause()
+        KeyboardUtils.hideSoftInput(this)
     }
 
-    protected fun onError(error: AppException){
-        toast(error.errorMsg)
+    private var lastBackPressTime = 0L
+    /**
+     * 两次返回退出Activity
+     */
+    protected fun doubleBackToFinish(duration: Long = 2000, toast: String = "再按一次退出") {
+        if (!FragmentUtils.dispatchBackPress(supportFragmentManager)) {
+            if(System.currentTimeMillis() - lastBackPressTime < duration){
+                ToastUtils.cancel()
+                super.onBackPressed()
+            }else{
+                lastBackPressTime = System.currentTimeMillis()
+                ToastUtils.showShort(toast)
+            }
+        }
     }
 }

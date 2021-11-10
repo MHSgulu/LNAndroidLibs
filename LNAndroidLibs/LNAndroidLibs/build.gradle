@@ -64,7 +64,7 @@ dependencies {
     api 'com.permissionx.guolindev:permissionx:1.4.0'
 
     // 对话框 https://github.com/li-xiaojun/XPopup
-    api 'com.lxj:xpopup:2.2.23'
+    api 'com.github.li-xiaojun:XPopup:2.6.2'
 
     api 'com.jeremyliao:live-event-bus-x:1.7.3'
 
@@ -78,9 +78,9 @@ dependencies {
     /// 通过标签直接生成shape，无需再写shape.xml https://github.com/JavaNoober/BackgroundLibrary
     api 'com.github.JavaNoober.BackgroundLibrary:libraryx:1.7.2'
 
-    api 'com.github.liujingxing.rxhttp:rxhttp:2.6.5'
+    api 'com.github.liujingxing.rxhttp:rxhttp:2.7.3'
     api 'com.squareup.okhttp3:okhttp:4.9.1'
-    kapt 'com.github.liujingxing.rxhttp:rxhttp-compiler:2.6.5' //生成RxHttp类
+    kapt 'com.github.liujingxing.rxhttp:rxhttp-compiler:2.7.3' //生成RxHttp类
     api 'com.squareup.okhttp3:logging-interceptor:4.7.2'
     api 'com.github.liujingxing.rxlife:rxlife-coroutine:2.1.0' //管理协程生命周期，页面销毁，关闭请求
 
@@ -105,6 +105,8 @@ dependencies {
     api 'com.google.android.flexbox:flexbox:3.0.0'
 
     api 'com.itxca.msa:msa:1.0.4'
+    api 'com.tencent:mmkv-static:1.2.10'
 
-
+    api 'com.jaeger.ninegridimageview:library:1.1.1'  //九宫格
+    api 'com.github.li-xiaojun:StateLayout:1.2.9'
 }
