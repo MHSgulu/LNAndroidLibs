@@ -1,25 +1,27 @@
 package com.lnkj.android.demo.net.interceptor
 
 import com.lnkj.libs.utils.NetworkUtil
-import com.lnkj.libs.utils.context
+import com.lnkj.libs.utils.application
 import okhttp3.CacheControl
 import okhttp3.Interceptor
 import okhttp3.Response
 
 /**
+ * 作者　: hegaojian
+ * 时间　: 2019/12/23
  * 描述　: 缓存拦截器
  * @param day 缓存天数 默认7天
  */
 class CacheInterceptor(var day: Int = 7) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
-        if (!NetworkUtil.isNetworkAvailable(context)) {
+        if (!NetworkUtil.isNetworkAvailable(application)) {
             request = request.newBuilder()
                 .cacheControl(CacheControl.FORCE_CACHE)
                 .build()
         }
         val response = chain.proceed(request)
-        if (!NetworkUtil.isNetworkAvailable(context)) {
+        if (!NetworkUtil.isNetworkAvailable(application)) {
             val maxAge = 60 * 60
             response.newBuilder()
                 .removeHeader("Pragma")

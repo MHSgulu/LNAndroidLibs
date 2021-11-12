@@ -302,6 +302,29 @@ val View.isInvisible: Boolean
         return visibility == View.INVISIBLE
     }
 
+
+/**
+ * 根据条件设置view显示隐藏 为true 显示，为false 隐藏
+ */
+fun View.visibleOrGone(flag:Boolean) {
+    visibility = if(flag){
+        View.VISIBLE
+    }else{
+        View.GONE
+    }
+}
+
+/**
+ * 根据条件设置view显示隐藏 为true 显示，为false 隐藏
+ */
+fun View.visibleOrInvisible(flag:Boolean) {
+    visibility = if(flag){
+        View.VISIBLE
+    }else{
+        View.INVISIBLE
+    }
+}
+
 /**
  * 切换View的可见性
  */

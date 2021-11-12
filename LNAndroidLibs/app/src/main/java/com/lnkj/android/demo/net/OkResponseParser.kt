@@ -8,7 +8,7 @@ import java.io.IOException
 import java.lang.reflect.Type
 
 @Parser(name = "OkResponse")
-open class OkResponseParser : TypeParser<Any> {
+open class OkResponseParser<T> : TypeParser<Any> {
 
     //以下两个构造方法是必须的
     protected constructor() : super()
@@ -17,7 +17,7 @@ open class OkResponseParser : TypeParser<Any> {
     @Throws(IOException::class)
     override fun onParse(response: okhttp3.Response): Any {
         val data: Response<Any> = response.convertTo(Response::class, *types)
-        if (data.code != 200) {
+        if (data.code != 1) {
             throw ParseException(data.code.toString(), data.msg, response)
         }
         return Any()  //最后返回data字段

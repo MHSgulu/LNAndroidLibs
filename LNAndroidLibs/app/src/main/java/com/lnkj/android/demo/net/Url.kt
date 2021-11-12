@@ -7,7 +7,7 @@ object Url {
     // 默认域名
     @JvmField
     @DefaultDomain()
-    var baseUrl = "http://192.168.0.104:80/"
+    var baseUrl = "http://meimeida.host5.liuniukeji.net/index.php/"
 
     /**
      * 随机网络图片地址

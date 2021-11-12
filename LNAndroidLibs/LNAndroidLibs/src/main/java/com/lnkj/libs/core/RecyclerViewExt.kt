@@ -12,8 +12,6 @@ import com.lnkj.libs.utils.SafeGridLayoutManager
 import com.lnkj.libs.utils.SafeLinearLayoutManager
 import com.lnkj.libs.utils.SafeStaggeredGridLayoutManager
 import com.lnkj.libs.utils.anim.DefaultItemNoAnimAnimator
-import com.lnkj.libs.utils.ext.dp2px
-import java.util.*
 
 /**
  * Description: RecyclerView扩展

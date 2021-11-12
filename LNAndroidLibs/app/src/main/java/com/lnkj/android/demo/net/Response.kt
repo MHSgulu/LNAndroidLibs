@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 
 class Response<T> {
-    @SerializedName("code")
+    @SerializedName("status")
     var code = 0
-    @SerializedName("msg")
+    @SerializedName("info")
     var msg: String = ""
     var data: T? = null
 }

@@ -7,7 +7,6 @@ import android.text.Html
 import android.text.Spanned
 import android.text.TextUtils
 import android.view.View
-import com.lnkj.libs.utils.ext.view.clickNoRepeat
 
 /**
  * 获取屏幕宽度
@@ -100,33 +99,6 @@ fun Context.checkAccessibilityServiceEnabled(serviceName: String): Boolean {
         }
     }
     return result
-}
-
-/**
- * 设置点击事件
- * @param views 需要设置点击事件的view
- * @param onClick 点击触发的方法
- */
-fun setOnclick(vararg views: View?, onClick: (View) -> Unit) {
-    views.forEach {
-        it?.setOnClickListener { view ->
-            onClick.invoke(view)
-        }
-    }
-}
-
-/**
- * 设置防止重复点击事件
- * @param views 需要设置点击事件的view集合
- * @param interval 时间间隔 默认0.5秒
- * @param onClick 点击触发的方法
- */
-fun setOnclickNoRepeat(vararg views: View?, interval: Long = 500, onClick: (View) -> Unit) {
-    views.forEach {
-        it?.clickNoRepeat(interval = interval) { view ->
-            onClick.invoke(view)
-        }
-    }
 }
 
 fun String.toHtml(flag: Int = Html.FROM_HTML_MODE_LEGACY): Spanned {

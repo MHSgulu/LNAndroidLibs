@@ -12,7 +12,7 @@ import java.util.concurrent.TimeoutException
 val Throwable.code: String
     get() {
         val errorCode = when (this) {
-            is HttpStatusCodeException -> this.statusCode //Http状态码异常
+            is HttpStatusCodeException -> this.statusCode.toString() //Http状态码异常
             is ParseException -> this.errorCode     //业务code异常
             else -> "0"
         }

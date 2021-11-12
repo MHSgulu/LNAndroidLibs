@@ -2,7 +2,6 @@ package com.lnkj.libs.base
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.FragmentUtils
@@ -10,12 +9,9 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.itxca.msa.IMsa
 import com.itxca.msa.msa
-import com.lnkj.libs.net.AppException
-import com.lnkj.libs.utils.ext.getVmClazz
-import com.lnkj.libs.utils.ext.inflateBindingWithGeneric
-import com.lnkj.libs.utils.ext.view.dismissLoading
-import com.lnkj.libs.utils.ext.view.showLoading
-import com.lnkj.libs.utils.toast
+import com.lnkj.libs.core.getVmClazz
+import com.lnkj.libs.core.inflateBindingWithGeneric
+
 
 abstract class BaseActivity<VM: BaseViewModel, VB : ViewBinding>: AppCompatActivity(),IMsa by msa()  {
 

@@ -9,18 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.gyf.immersionbar.components.SimpleImmersionFragment
 import com.itxca.msa.IMsa
 import com.itxca.msa.msa
-import com.lnkj.libs.net.AppException
-import com.lnkj.libs.utils.ext.getVmClazz
-import com.lnkj.libs.utils.ext.inflateBindingWithGeneric
-import com.lnkj.libs.utils.ext.view.dismissLoading
-import com.lnkj.libs.utils.ext.view.showLoading
-import com.lnkj.libs.utils.toast
+import com.lnkj.libs.core.getVmClazz
+import com.lnkj.libs.core.inflateBindingWithGeneric
 
 abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : SimpleImmersionFragment(), IMsa by msa(){
 
@@ -64,7 +59,6 @@ abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : SimpleImmersi
         initManageStartActivity()
         isFirst = true
         vm = createViewModel()
-        registerDefUIChange()
         initView(savedInstanceState)
         createObserver()
         initData()
@@ -101,26 +95,6 @@ abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : SimpleImmersi
                 isFirst = false
             },lazyLoadTime())
         }
-    }
-
-    /**
-     * 注册 UI 事件
-     */
-    private fun registerDefUIChange() {
-        vm.uiState.showDialog.observeInFragment(this) {
-            showLoading(it)
-        }
-        vm.uiState.dismissDialog.observeInFragment(this) {
-            dismissLoading()
-        }
-        // 错误处理
-        vm.uiState.error.observeInFragment(this){
-            onError(it)
-        }
-    }
-
-    protected fun onError(error: AppException){
-        toast(error.errorMsg)
     }
 
     /**

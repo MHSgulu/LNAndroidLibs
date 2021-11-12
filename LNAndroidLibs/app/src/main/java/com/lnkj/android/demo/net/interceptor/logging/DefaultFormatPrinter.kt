@@ -1,11 +1,11 @@
 package com.lnkj.android.demo.net.interceptor.logging
 
 import android.text.TextUtils
-import com.blankj.utilcode.util.LogUtils
 import com.lnkj.libs.utils.CharacterHandler.Companion.jsonFormat
 import com.lnkj.libs.utils.CharacterHandler.Companion.xmlFormat
-import com.lnkj.libs.net.interceptor.logging.LogInterceptor.Companion.isJson
-import com.lnkj.libs.net.interceptor.logging.LogInterceptor.Companion.isXml
+import com.lnkj.libs.utils.LogUtil
+import com.lnkj.android.demo.net.interceptor.logging.LogInterceptor.Companion.isJson
+import com.lnkj.android.demo.net.interceptor.logging.LogInterceptor.Companion.isXml
 import okhttp3.MediaType
 import okhttp3.Request
 import java.security.MessageDigest
@@ -34,7 +34,7 @@ class DefaultFormatPrinter : FormatPrinter {
         val requestBody =
             LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + bodyString
         val tag = getTag(true)
-        LogUtils.e(tag, REQUEST_UP_LINE)
+        LogUtil.debugInfo(tag, REQUEST_UP_LINE)
         logLines(
             tag,
             arrayOf(URL_TAG + request.url),
@@ -50,7 +50,7 @@ class DefaultFormatPrinter : FormatPrinter {
             requestBody.split(LINE_SEPARATOR!!).toTypedArray(),
             true
         )
-        LogUtils.e(tag, END_LINE)
+        LogUtil.debugInfo(tag, END_LINE)
     }
 
     /**
@@ -61,7 +61,7 @@ class DefaultFormatPrinter : FormatPrinter {
     override fun printFileRequest(request: Request) {
         appendTag = md5(URL_TAG + request.url)
         val tag = getTag(true)
-        LogUtils.e(tag, REQUEST_UP_LINE)
+        LogUtil.debugInfo(tag, REQUEST_UP_LINE)
         logLines(
             tag,
             arrayOf(URL_TAG + request.url),
@@ -77,7 +77,7 @@ class DefaultFormatPrinter : FormatPrinter {
             OMITTED_REQUEST,
             true
         )
-        LogUtils.e(tag, END_LINE)
+        LogUtil.debugInfo(tag, END_LINE)
     }
 
     /**
@@ -121,7 +121,7 @@ class DefaultFormatPrinter : FormatPrinter {
             URL_TAG + responseUrl,
             N
         )
-        LogUtils.e(tag, RESPONSE_UP_LINE)
+        LogUtil.debugInfo(tag, RESPONSE_UP_LINE)
         logLines(tag, urlLine, true)
         logLines(
             tag,
@@ -140,7 +140,7 @@ class DefaultFormatPrinter : FormatPrinter {
             responseBody.split(LINE_SEPARATOR!!).toTypedArray(),
             true
         )
-        LogUtils.e(tag, END_LINE)
+        LogUtil.debugInfo(tag, END_LINE)
     }
 
     /**
@@ -169,7 +169,7 @@ class DefaultFormatPrinter : FormatPrinter {
             URL_TAG + responseUrl,
             N
         )
-        LogUtils.e(tag, RESPONSE_UP_LINE)
+        LogUtil.debugInfo(tag, RESPONSE_UP_LINE)
         logLines(tag, urlLine, true)
         logLines(
             tag,
@@ -188,7 +188,7 @@ class DefaultFormatPrinter : FormatPrinter {
             OMITTED_RESPONSE,
             true
         )
-        LogUtils.e(tag, END_LINE)
+        LogUtil.debugInfo(tag, END_LINE)
     }
 
     private fun getTag(isRequest: Boolean): String {
@@ -263,7 +263,7 @@ class DefaultFormatPrinter : FormatPrinter {
                     val start = i * maxLongSize
                     var end = (i + 1) * maxLongSize
                     end = if (end > line.length) line.length else end
-                    LogUtils.e(
+                    LogUtil.debugInfo(
                         resolveTag(tag),
                         DEFAULT_LINE + line.substring(start, end)
                     )
