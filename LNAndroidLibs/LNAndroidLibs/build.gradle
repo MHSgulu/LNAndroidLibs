@@ -80,7 +80,7 @@ dependencies {
 
     api 'com.github.liujingxing.rxhttp:rxhttp:2.7.3'
     api 'com.squareup.okhttp3:okhttp:4.9.1'
-    kapt 'com.github.liujingxing.rxhttp:rxhttp-compiler:2.7.3' //生成RxHttp类
+//    kapt 'com.github.liujingxing.rxhttp:rxhttp-compiler:2.7.3' //生成RxHttp类
     api 'com.squareup.okhttp3:logging-interceptor:4.7.2'
     api 'com.github.liujingxing.rxlife:rxlife-coroutine:2.1.0' //管理协程生命周期，页面销毁，关闭请求
 

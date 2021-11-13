@@ -15,8 +15,8 @@ suspend fun BaseViewModel.okRequest(
     onStart: () -> Unit = {},
     onSuccess: () -> Unit = {},
     onError: (msg: String, code: String) -> Unit = {msg, code -> }
-) {
-    RxHttp.postForm(url)
+) : Any{
+    return RxHttp.postForm(url)
         .addAll(params.toMap())
         .toFlowOkResponse<Any>()
         .onStart { onStart() }

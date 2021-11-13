@@ -37,11 +37,6 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.6.0'
     implementation 'androidx.appcompat:appcompat:1.3.0'
     implementation 'com.google.android.material:material:1.3.0'
-//    api files('libs\\open_sdk_3.5.7.4_r1bc9afe_lite.jar')
-
-    // https://opendocs.alipay.com/open/204/105296  支付宝接入文档
-//    api (name: 'alipaysdk-15.8.05.211018174351', ext: 'aar')
-//    api (name: 'openDefault-11.8.1', ext: 'aar')
     api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:6.8.0'
 
 
