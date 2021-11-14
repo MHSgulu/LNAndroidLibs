@@ -4,9 +4,7 @@ import android.os.Bundle
 import com.lnkj.android.demo.databinding.ActivityLoginBinding
 import com.lnkj.libs.base.BaseActivity
 import com.lnkj.libs.core.click
-import com.lnkj.libs.core.dismissLoading
-import com.lnkj.libs.core.showLoading
-import com.lnkj.libs.state.UiState
+import com.lnkj.libs.state.observeState
 import com.lnkj.libs.utils.toast
 
 class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
@@ -19,18 +17,23 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
 
     }
 
-    override fun createObserver() {
-        vm.codeState.observeInActivity(this) {
-            when (it) {
-                is UiState.Start -> showLoading()
-                is UiState.Error -> {
-                    dismissLoading()
-                    toast(it.msg)
-                }
-                is UiState.Next -> {
-                    dismissLoading()
-                    it.t
-                }
+    override fun initData() {
+
+    }
+
+    override fun startObserve() {
+
+        vm.codeState.observeState(this){
+            onLading = {
+                showLoading()
+            }
+            onError = {code, msg ->
+                dismissLoading()
+                toast(msg)
+            }
+            onSuccess = {
+                dismissLoading()
+                it
             }
         }
     }

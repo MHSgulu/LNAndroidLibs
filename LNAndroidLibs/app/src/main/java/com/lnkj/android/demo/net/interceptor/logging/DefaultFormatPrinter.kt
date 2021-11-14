@@ -18,7 +18,7 @@ import java.security.NoSuchAlgorithmException
  */
 class DefaultFormatPrinter : FormatPrinter {
 
-    private var appendTag = ""
+//    private var appendTag = ""
 
     /**
      * 打印网络请求信息, 当网络请求时 {[okhttp3.RequestBody]} 可以解析的情况
@@ -30,11 +30,11 @@ class DefaultFormatPrinter : FormatPrinter {
         request: Request,
         bodyString: String
     ) {
-        appendTag = md5(URL_TAG + request.url)
+//        appendTag = md5(URL_TAG + request.url)
         val requestBody =
             LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + bodyString
         val tag = getTag(true)
-        LogUtil.debugInfo(tag, REQUEST_UP_LINE)
+        LogUtil.debugLongInfo(tag, REQUEST_UP_LINE)
         logLines(
             tag,
             arrayOf(URL_TAG + request.url),
@@ -50,7 +50,7 @@ class DefaultFormatPrinter : FormatPrinter {
             requestBody.split(LINE_SEPARATOR!!).toTypedArray(),
             true
         )
-        LogUtil.debugInfo(tag, END_LINE)
+        LogUtil.debugLongInfo(tag, END_LINE)
     }
 
     /**
@@ -59,9 +59,9 @@ class DefaultFormatPrinter : FormatPrinter {
      * @param request
      */
     override fun printFileRequest(request: Request) {
-        appendTag = md5(URL_TAG + request.url)
+//        appendTag = md5(URL_TAG + request.url)
         val tag = getTag(true)
-        LogUtil.debugInfo(tag, REQUEST_UP_LINE)
+        LogUtil.debugLongInfo(tag, REQUEST_UP_LINE)
         logLines(
             tag,
             arrayOf(URL_TAG + request.url),
@@ -77,7 +77,7 @@ class DefaultFormatPrinter : FormatPrinter {
             OMITTED_REQUEST,
             true
         )
-        LogUtil.debugInfo(tag, END_LINE)
+        LogUtil.debugLongInfo(tag, END_LINE)
     }
 
     /**
@@ -104,7 +104,7 @@ class DefaultFormatPrinter : FormatPrinter {
         message: String,
         responseUrl: String
     ) {
-        appendTag = md5(URL_TAG + responseUrl)
+//        appendTag = md5(URL_TAG + responseUrl)
         var bodyString = bodyString
         bodyString =
             when {
@@ -121,7 +121,7 @@ class DefaultFormatPrinter : FormatPrinter {
             URL_TAG + responseUrl,
             N
         )
-        LogUtil.debugInfo(tag, RESPONSE_UP_LINE)
+        LogUtil.debugLongInfo(tag, RESPONSE_UP_LINE)
         logLines(tag, urlLine, true)
         logLines(
             tag,
@@ -140,7 +140,7 @@ class DefaultFormatPrinter : FormatPrinter {
             responseBody.split(LINE_SEPARATOR!!).toTypedArray(),
             true
         )
-        LogUtil.debugInfo(tag, END_LINE)
+        LogUtil.debugLongInfo(tag, END_LINE)
     }
 
     /**
@@ -163,13 +163,13 @@ class DefaultFormatPrinter : FormatPrinter {
         message: String,
         responseUrl: String
     ) {
-        appendTag = md5(URL_TAG + responseUrl)
+//        appendTag = md5(URL_TAG + responseUrl)
         val tag = getTag(false)
         val urlLine = arrayOf<String?>(
             URL_TAG + responseUrl,
             N
         )
-        LogUtil.debugInfo(tag, RESPONSE_UP_LINE)
+        LogUtil.debugLongInfo(tag, RESPONSE_UP_LINE)
         logLines(tag, urlLine, true)
         logLines(
             tag,
@@ -188,14 +188,14 @@ class DefaultFormatPrinter : FormatPrinter {
             OMITTED_RESPONSE,
             true
         )
-        LogUtil.debugInfo(tag, END_LINE)
+        LogUtil.debugLongInfo(tag, END_LINE)
     }
 
     private fun getTag(isRequest: Boolean): String {
         return if (isRequest) {
-            "$TAG-Request-$appendTag"
+            "$TAG-Request"
         } else {
-            "$TAG-Response-$appendTag"
+            "$TAG-Response"
         }
     }
 
@@ -263,7 +263,7 @@ class DefaultFormatPrinter : FormatPrinter {
                     val start = i * maxLongSize
                     var end = (i + 1) * maxLongSize
                     end = if (end > line.length) line.length else end
-                    LogUtil.debugInfo(
+                    LogUtil.debugLongInfo(
                         resolveTag(tag),
                         DEFAULT_LINE + line.substring(start, end)
                     )

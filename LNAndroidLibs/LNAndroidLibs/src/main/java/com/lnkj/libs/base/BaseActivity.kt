@@ -1,16 +1,25 @@
 package com.lnkj.libs.base
 
 import android.os.Bundle
+import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.FragmentUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ToastUtils
+import com.gyf.immersionbar.ktx.immersionBar
 import com.itxca.msa.IMsa
 import com.itxca.msa.msa
+import com.lnkj.libs.R
 import com.lnkj.libs.core.getVmClazz
 import com.lnkj.libs.core.inflateBindingWithGeneric
+import com.lnkj.libs.manager.NetState
+import com.lnkj.libs.manager.NetworkStateManager
+import com.lnkj.libs.utils.ext.util.hideSoftInput
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.impl.LoadingPopupView
 
 
 abstract class BaseActivity<VM: BaseViewModel, VB : ViewBinding>: AppCompatActivity(),IMsa by msa()  {
@@ -20,24 +29,45 @@ abstract class BaseActivity<VM: BaseViewModel, VB : ViewBinding>: AppCompatActiv
 
     lateinit var binding: VB
 
+    private var loadingDialog: LoadingPopupView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initManageStartActivity()
         binding = inflateBindingWithGeneric(layoutInflater)
         setContentView(binding.root)
         vm = createViewModel()
-        init(savedInstanceState)
+        doCreateView(savedInstanceState)
+        NetworkStateManager.instance.mNetworkStateCallback.observeInActivity(this) {
+            onNetworkStateChanged(it)
+        }
     }
 
-    private fun init(savedInstanceState: Bundle?) {
+    private fun doCreateView(savedInstanceState: Bundle?) {
+        initImmersionBar()
+        initIntent()
         initView(savedInstanceState)
-        createObserver()
+        startObserve()
+        initData()
     }
 
+    open fun initImmersionBar() {
+        immersionBar {
+            statusBarDarkFont(true)
+            statusBarColor(R.color.c_fb)
+            titleBarMarginTop(binding.root)
+        }
+    }
+
+    open fun initIntent() {}
     abstract fun initView(savedInstanceState: Bundle?)
+    abstract fun initData()
+    open fun startObserve(){}
 
-
-    abstract fun createObserver()
+    /**
+     * 网络变化监听 子类重写
+     */
+    open fun onNetworkStateChanged(netState: NetState) {}
 
     private fun createViewModel(): VM {
         return ViewModelProvider(this)[getVmClazz(this)]
@@ -64,4 +94,27 @@ abstract class BaseActivity<VM: BaseViewModel, VB : ViewBinding>: AppCompatActiv
             }
         }
     }
+
+    fun showLoading(msg: String = "加载中..."){
+        if(loadingDialog == null){
+            loadingDialog = XPopup.Builder(this)
+                .dismissOnBackPressed(false)
+                .dismissOnTouchOutside(false)
+                .asLoading(msg)
+        }
+        if(loadingDialog?.isShow == true){
+            loadingDialog?.dismiss()
+        }
+        loadingDialog?.show()
+    }
+
+    fun dismissLoading(){
+        loadingDialog?.dismiss()
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        hideSoftInput()
+        return super.onTouchEvent(event)
+    }
+
 }

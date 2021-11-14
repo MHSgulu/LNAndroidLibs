@@ -2,7 +2,7 @@ package com.lnkj.libs.utils
 
 import android.text.TextUtils
 import android.util.Log
-import com.lnkj.libs.utils.ext.util.jetpackMvvmLog
+import com.lnkj.libs.utils.ext.util.lnAndroidLibsLog
 
 /**
  * 作者　: hegaojian
@@ -10,9 +10,9 @@ import com.lnkj.libs.utils.ext.util.jetpackMvvmLog
  * 描述　:
  */
 object LogUtil {
-    private const val DEFAULT_TAG = "JetpackMvvm"
+    private const val DEFAULT_TAG = "LiuNiuAndroidLibs"
     fun debugInfo(tag: String?, msg: String?) {
-        if (!jetpackMvvmLog || TextUtils.isEmpty(msg)) {
+        if (!lnAndroidLibsLog || TextUtils.isEmpty(msg)) {
             return
         }
         Log.d(tag, msg!!)
@@ -26,7 +26,7 @@ object LogUtil {
     }
 
     fun warnInfo(tag: String?, msg: String?) {
-        if (!jetpackMvvmLog || TextUtils.isEmpty(msg)) {
+        if (!lnAndroidLibsLog || TextUtils.isEmpty(msg)) {
             return
         }
         Log.w(tag, msg!!)
@@ -47,7 +47,7 @@ object LogUtil {
      */
     fun debugLongInfo(tag: String?, msg: String) {
         var msg = msg
-        if (!jetpackMvvmLog || TextUtils.isEmpty(msg)) {
+        if (!lnAndroidLibsLog || TextUtils.isEmpty(msg)) {
             return
         }
         msg = msg.trim { it <= ' ' }
@@ -61,7 +61,7 @@ object LogUtil {
                 msg.substring(index, index + maxLength)
             }
             index += maxLength
-            Log.d(tag, sub.trim { it <= ' ' })
+            Log.e(tag, sub.trim { it <= ' ' })
         }
     }
 

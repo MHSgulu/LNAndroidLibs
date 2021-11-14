@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.gyf.immersionbar.components.SimpleImmersionFragment
@@ -16,6 +17,10 @@ import com.itxca.msa.IMsa
 import com.itxca.msa.msa
 import com.lnkj.libs.core.getVmClazz
 import com.lnkj.libs.core.inflateBindingWithGeneric
+import com.lnkj.libs.manager.NetState
+import com.lnkj.libs.manager.NetworkStateManager
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.impl.LoadingPopupView
 
 abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : SimpleImmersionFragment(), IMsa by msa(){
 
@@ -31,6 +36,8 @@ abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : SimpleImmersi
     private var isFirst: Boolean = true
 
     lateinit var mActivity: AppCompatActivity
+
+    private var loadingDialog: LoadingPopupView? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -58,26 +65,27 @@ abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : SimpleImmersi
         super.onViewCreated(view, savedInstanceState)
         initManageStartActivity()
         isFirst = true
+        initArgument()
         vm = createViewModel()
         initView(savedInstanceState)
-        createObserver()
+        startObserve()
         initData()
     }
 
-    /**
-     * 初始化view
-     */
+    open fun initArgument() {}
     abstract fun initView(savedInstanceState: Bundle?)
+    open fun startObserve() {}
 
     /**
      * 懒加载
      */
     abstract fun lazyLoadData()
 
+
     /**
-     * 创建观察者
+     * 网络变化监听 子类重写
      */
-    abstract fun createObserver()
+    open fun onNetworkStateChanged(netState: NetState) {}
 
     override fun onResume() {
         super.onResume()
@@ -92,6 +100,15 @@ abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : SimpleImmersi
             // 延迟加载 防止 切换动画还没执行完毕时数据就已经加载好了，这时页面会有渲染卡顿
             handler.postDelayed( {
                 lazyLoadData()
+                //在Fragment中，只有懒加载过了才能开启网络变化监听
+                NetworkStateManager.instance.mNetworkStateCallback.observeInFragment(
+                    this
+                ) {
+                    //不是首次订阅时调用方法，防止数据第一次监听错误
+                    if (!isFirst) {
+                        onNetworkStateChanged(it)
+                    }
+                }
                 isFirst = false
             },lazyLoadTime())
         }
@@ -123,6 +140,23 @@ abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : SimpleImmersi
 
     override fun initImmersionBar() {
 
+    }
+
+    fun showLoading(msg: String = "加载中...") {
+        if (loadingDialog == null) {
+            loadingDialog = XPopup.Builder(context)
+                .dismissOnBackPressed(false)
+                .dismissOnTouchOutside(false)
+                .asLoading(msg)
+        }
+        if (loadingDialog?.isShow == true) {
+            loadingDialog?.dismiss()
+        }
+        loadingDialog?.show()
+    }
+
+    fun dismissLoading() {
+        loadingDialog?.dismiss()
     }
 
 }

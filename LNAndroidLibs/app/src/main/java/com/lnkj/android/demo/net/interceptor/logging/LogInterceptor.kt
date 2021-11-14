@@ -43,8 +43,7 @@ class LogInterceptor : Interceptor {
         val logResponse =
             printLevel == Level.ALL || printLevel != Level.NONE && printLevel == Level.RESPONSE
         val t1 = if (logResponse) System.nanoTime() else 0
-        val originalResponse: Response
-        originalResponse = try {
+        val originalResponse: Response = try {
             chain.proceed(request)
         } catch (e: Exception) {
             e.message?.let {

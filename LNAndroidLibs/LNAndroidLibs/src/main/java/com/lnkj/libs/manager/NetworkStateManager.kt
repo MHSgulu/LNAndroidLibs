@@ -1,4 +1,4 @@
-package com.lnkj.android.demo.net.manager
+package com.lnkj.libs.manager
 
 import com.lnkj.libs.utils.livedata.event.EventLiveData
 

@@ -1,4 +1,4 @@
-package com.lnkj.android.demo.net.manager
+package com.lnkj.libs.manager
 
 import android.content.BroadcastReceiver
 import android.content.Context
