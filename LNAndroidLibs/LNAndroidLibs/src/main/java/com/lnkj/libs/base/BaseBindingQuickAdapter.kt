@@ -7,8 +7,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.lnkj.libs.core.inflateBindingWithGeneric
 
-abstract class BaseBindingQuickAdapter<T, VB : ViewBinding>(layoutResId: Int = -1) :
-    BaseQuickAdapter<T, BaseBindingQuickAdapter.BaseBindingHolder>(layoutResId) {
+abstract class BaseBindingQuickAdapter<T, VB : ViewBinding>(layoutResId: Int = -1, data: MutableList<T>) :
+    BaseQuickAdapter<T, BaseBindingQuickAdapter.BaseBindingHolder>(layoutResId, data) {
 
     override fun onCreateDefViewHolder(parent: ViewGroup, viewType: Int) =
         BaseBindingHolder(inflateBindingWithGeneric<VB>(parent))

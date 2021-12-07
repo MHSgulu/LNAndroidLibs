@@ -41,6 +41,13 @@ android {
     dexOptions {
         javaMaxHeapSize "4g"
     }
+
+    //kapt传参方式
+    kapt {
+        arguments {
+            arg("rxhttp_rxjava", "3.1.1")
+        }
+    }
 }
 
 
@@ -70,5 +77,5 @@ dependencies {
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
 
     kapt 'com.github.liujingxing.rxhttp:rxhttp-compiler:2.7.3' //生成RxHttp类
-
+    implementation 'com.shuyu:GSYVideoPlayer:7.1.3'
 }
