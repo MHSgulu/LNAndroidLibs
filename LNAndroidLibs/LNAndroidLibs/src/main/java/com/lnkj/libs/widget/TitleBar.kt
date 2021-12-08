@@ -382,12 +382,12 @@ class TitleBar @JvmOverloads constructor(context: Context, attributeSet: Attribu
     }
 
     private fun initClick() {
-        binding.tvLeftText.click { clickListener?.leftTextClick() }
-        binding.tvRightText.click { clickListener?.rightTextClick() }
-        binding.ivLeftImage.click { clickListener?.leftImageClick() }
-        binding.ivRightImage.click { clickListener?.rightImageClick() }
-        binding.ivRightImage2.click { clickListener?.rightImage2Click() }
-        binding.ivRightImage3.click { clickListener?.rightImage3Click() }
+        binding.tvLeftText.clickWithTrigger { clickListener?.leftTextClick() }
+        binding.tvRightText.clickWithTrigger { clickListener?.rightTextClick() }
+        binding.ivLeftImage.clickWithTrigger { clickListener?.leftImageClick() }
+        binding.ivRightImage.clickWithTrigger { clickListener?.rightImageClick() }
+        binding.ivRightImage2.clickWithTrigger { clickListener?.rightImage2Click() }
+        binding.ivRightImage3.clickWithTrigger { clickListener?.rightImage3Click() }
     }
 
     fun titleTextView() = binding.tvTitle
