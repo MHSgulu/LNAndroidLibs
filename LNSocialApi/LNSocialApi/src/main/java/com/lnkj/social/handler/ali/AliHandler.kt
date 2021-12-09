@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Message
+import android.util.Log
 import com.alipay.sdk.app.AuthTask
 import com.alipay.sdk.app.PayTask
 import com.lnkj.social.PlatformManager
@@ -123,7 +124,7 @@ class AliHandler(context: Context, config: PlatformConfig) : SSOHandler() {
             // 调用授权接口，获取授权结果
             val result = AuthTask(activity).authV2(authInfo, true)
             val msg = Message()
-            msg.what = SDK_AUTH_FLAG
+            msg.arg1 = SDK_AUTH_FLAG
             msg.obj = result
             if (mHandler != null) {
                 mHandler!!.sendMessage(msg)
@@ -156,6 +157,7 @@ class AliHandler(context: Context, config: PlatformConfig) : SSOHandler() {
                             return
                         }
                         val resultStatus = (msg.obj as MutableMap<*, *>)["resultStatus"]
+                        Log.e("AliAuth", resultStatus.toString())
                         when {
                             ALI_9000 == resultStatus -> {
                                 val result = (msg.obj as MutableMap<*, *>)["result"]
@@ -177,6 +179,7 @@ class AliHandler(context: Context, config: PlatformConfig) : SSOHandler() {
                     }
                     SDK_PAY_FLAG -> {
                         val resultStatus = (msg.obj as Map<*, *>)["resultStatus"]
+                        Log.e("AliPay", resultStatus.toString())
                         when {
                             ALI_9000 == resultStatus -> mPayCallback.onSuccess?.invoke(PlatformType.ALI)
                             ALI_6001 == resultStatus -> mPayCallback.onCancel?.invoke(PlatformType.ALI)

@@ -12,3 +12,5 @@ dependencyResolutionManagement {
 rootProject.name = "LNSocialApi"
 include ':app'
 include ':LNSocialApi'
+include ':alipaysdk'
+include ':weibosdk'
