@@ -6,6 +6,7 @@ import com.lnkj.libs.base.BaseViewModel
 import com.lnkj.libs.state.StateData
 import com.lnkj.libs.state.StatefulMutableLiveData
 import com.lnkj.libs.utils.livedata.event.EventLiveData
+import rxhttp.wrapper.param.RxHttp
 
 class LoginViewModel : BaseViewModel() {
 
@@ -25,7 +26,7 @@ class LoginViewModel : BaseViewModel() {
                     codeState.value = StateData.Success(Any())
                 },
                 onError = { msg, code ->
-                    codeState.value = StateData.Error(msg, code)
+                    codeState.value = StateData.Error(code, msg)
                 })
         }
     }

@@ -18,7 +18,7 @@ fun BaseQuickAdapter<*, *>.setEmptyData(imgRes: Int = R.mipmap.img_zwhy, tip: St
     val textView = emptyView.findViewById<TextView>(R.id.emptyStatusTextView)
     textView.text = tip
 
-    imageView.click {
+    imageView.clickWithTrigger {
         reRefreshData.invoke()
     }
 

@@ -6,6 +6,7 @@ import com.lnkj.libs.base.BaseViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart
+import rxhttp.toFlowOkResponse
 import rxhttp.toOkResponse
 import rxhttp.wrapper.param.*
 
@@ -18,7 +19,7 @@ suspend fun BaseViewModel.okRequest(
 ) : Any{
     return RxHttp.postForm(url)
         .addAll(params.toMap())
-        .toFlowOkResponse<Any>()
+        .toFlowResponse<String>()
         .onStart { onStart() }
         .catch {
             val msg = it.msg
@@ -58,7 +59,7 @@ suspend inline fun <reified T : Any> BaseViewModel.requestList(
 ) {
     RxHttp.postForm(url)
         .addAll(params.toMap())
-        .toFlowListResponse<T>()
+        .toFlowResponse<MutableList<T>>()
         .onStart { onStart() }
         .catch {
             val msg = it.msg

@@ -5,7 +5,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lnkj.android.demo.databinding.ActivityListBinding
 import com.lnkj.libs.base.BaseActivity
-import com.lnkj.libs.core.click
+import com.lnkj.libs.core.clickWithTrigger
 
 class ListActivity : BaseActivity<ListViewModel, ActivityListBinding>() {
 
@@ -13,7 +13,7 @@ class ListActivity : BaseActivity<ListViewModel, ActivityListBinding>() {
     private val adapter = ListAdapter(data)
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding.appBar.ivBack.click { finish() }
+        binding.appBar.ivBack.clickWithTrigger { finish() }
         binding.appBar.tvTitle.text = ""
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
