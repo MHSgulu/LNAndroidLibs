@@ -5,11 +5,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.gyf.immersionbar.components.SimpleImmersionFragment
@@ -19,10 +19,12 @@ import com.lnkj.libs.core.getVmClazz
 import com.lnkj.libs.core.inflateBindingWithGeneric
 import com.lnkj.libs.manager.NetState
 import com.lnkj.libs.manager.NetworkStateManager
+import com.lnkj.libs.utils.ext.util.hideSoftInput
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.impl.LoadingPopupView
 
-abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : SimpleImmersionFragment(), IMsa by msa(){
+abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : SimpleImmersionFragment(),
+    BaseActivity.MyOnTouchListener, IMsa by msa(){
 
     private val handler = Handler(Looper.myLooper()!!)
 
@@ -46,11 +48,13 @@ abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : SimpleImmersi
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = inflateBindingWithGeneric(layoutInflater, container, false)
+        (requireActivity() as BaseActivity<*,*>).registerMyOnTouchListener(this)
         return binding.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        (requireActivity() as BaseActivity<*,*>).unregisterMyOnTouchListener(this)
         _binding = null
     }
 
@@ -157,6 +161,11 @@ abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : SimpleImmersi
 
     fun dismissLoading() {
         loadingDialog?.dismiss()
+    }
+
+    override fun onTouch(ev: MotionEvent?): Boolean {
+        hideSoftInput()
+        return true
     }
 
 }

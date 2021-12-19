@@ -9,8 +9,5 @@ import com.lnkj.libs.utils.ext.util.hideSoftInput
 
 abstract class BaseVMActivity<U: BaseViewModel, T: ViewBinding>: BaseActivity<U, T>() {
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        hideSoftInput()
-        return super.onTouchEvent(event)
-    }
+
 }

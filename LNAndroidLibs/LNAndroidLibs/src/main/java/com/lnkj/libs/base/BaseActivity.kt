@@ -117,4 +117,29 @@ abstract class BaseActivity<VM: BaseViewModel, VB : ViewBinding>: AppCompatActiv
         return super.onTouchEvent(event)
     }
 
+    //1.触摸事件接口
+    interface MyOnTouchListener {
+        fun onTouch(ev: MotionEvent?): Boolean
+    }
+
+    //2. 保存MyOnTouchListener接口的列表
+    private val onTouchListeners = ArrayList<MyOnTouchListener>()
+
+    //3.分发触摸事件给所有注册了MyOnTouchListener的接口
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        for (listener in onTouchListeners) {
+            listener.onTouch(ev)
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
+    //4.提供给Fragment通过getActivity()方法来注册自己的触摸事件的方法
+    open fun registerMyOnTouchListener(myOnTouchListener: MyOnTouchListener) {
+        onTouchListeners.add(myOnTouchListener)
+    }
+
+    //5.提供给Fragment通过getActivity()方法来注销自己的触摸事件的方法
+    open fun unregisterMyOnTouchListener(myOnTouchListener: MyOnTouchListener) {
+        onTouchListeners.remove(myOnTouchListener)
+    }
 }

@@ -18,7 +18,8 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
         }
 
         binding.btnLogin.clickWithTrigger {
-            startPage<ListActivity>()
+//            startPage<ListActivity>()
+
         }
 
     }
