@@ -1,4 +1,4 @@
-package com.lnkj.android.demo.net.interceptor.logging
+package com.lnkj.libs.net.interceptor.logging
 
 import okhttp3.MediaType
 import okhttp3.Request

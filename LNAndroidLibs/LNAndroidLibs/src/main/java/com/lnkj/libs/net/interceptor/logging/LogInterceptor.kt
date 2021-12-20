@@ -1,4 +1,4 @@
-package com.lnkj.android.demo.net.interceptor.logging
+package com.lnkj.libs.net.interceptor.logging
 
 import android.util.Log
 import com.lnkj.libs.utils.CharacterHandler.Companion.jsonFormat

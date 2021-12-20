@@ -8,6 +8,8 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.lnkj.libs.base.BaseActivity
+import com.lnkj.libs.base.BaseFragment
 import com.lnkj.libs.utils.ext.*
 import java.io.File
 
@@ -107,28 +109,31 @@ fun Context.sendEmail(email: String, subject: String?, text: String?) {
  * @param params Array<out Pair<String, Any?>>
  */
 
-inline fun<reified T: AppCompatActivity> Fragment.startPage(vararg params:Pair<String, Any?>) {
+inline fun <reified T : AppCompatActivity> Fragment.startPage(vararg params: Pair<String, Any?>) {
     val intent = Intent(this.activity, T::class.java).fillIntentArguments(*params)
-    if (this !is AppCompatActivity){
+    if (this !is AppCompatActivity) {
         intent.newTask()
     }
     startActivity(intent)
 }
 
-inline fun<reified T: AppCompatActivity> Context.startPage(vararg params:Pair<String, Any?>) {
+inline fun <reified T : AppCompatActivity> Context.startPage(vararg params: Pair<String, Any?>) {
     val intent = Intent(this, T::class.java).fillIntentArguments(*params)
-    if (this !is AppCompatActivity){
+    if (this !is AppCompatActivity) {
         intent.newTask()
     }
     startActivity(intent)
 }
 
-inline fun <reified T: AppCompatActivity> Activity.startPageForResult(requestCode: Int, vararg params: Pair<String, Any?>){
+inline fun <reified T : AppCompatActivity> Activity.startPageForResult(
+    requestCode: Int,
+    vararg params: Pair<String, Any?>
+) {
     val intent = Intent(this, T::class.java).fillIntentArguments(*params)
-    startActivityForResult(intent,requestCode)
+    startActivityForResult(intent, requestCode)
 }
 
-inline fun <reified T: Any> Context?.intentFor(vararg params: Pair<String, Any?>): Intent {
+inline fun <reified T : Any> Context?.intentFor(vararg params: Pair<String, Any?>): Intent {
     return Intent(this, T::class.java).fillIntentArguments(*params)
 }
 
@@ -144,5 +149,28 @@ fun Context.browse(url: String, newTask: Boolean = false): Boolean {
     } catch (e: ActivityNotFoundException) {
         e.printStackTrace()
         false
+    }
+}
+
+inline fun <reified T : BaseActivity<*, *>> BaseFragment<*, *>.startPageForResult(
+    vararg params: Pair<String, Any?>,
+    crossinline onResult: (code: Int, data: Intent?) -> Unit
+) {
+
+    T::class.startForResult({
+        fillIntentArguments(*params)
+    }) { code, data ->
+        onResult(code, data)
+    }
+}
+
+inline fun <reified T : BaseActivity<*, *>> BaseActivity<*, *>.startPageForResult(
+    vararg params: Pair<String, Any?>,
+    crossinline onResult: (code: Int, data: Intent?) -> Unit
+) {
+    T::class.startForResult({
+        fillIntentArguments(*params)
+    }) { code, data ->
+        onResult(code, data)
     }
 }

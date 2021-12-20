@@ -2,11 +2,9 @@ package com.lnkj.android.demo.login
 
 import android.os.Bundle
 import com.lnkj.android.demo.databinding.ActivityLoginBinding
-import com.lnkj.android.demo.list.ListActivity
 import com.lnkj.libs.base.BaseActivity
 import com.lnkj.libs.core.clickWithTrigger
 import com.lnkj.libs.state.observeState
-import com.lnkj.libs.utils.startPage
 import com.lnkj.libs.utils.toast
 
 class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
@@ -19,6 +17,10 @@ class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
 
         binding.btnLogin.clickWithTrigger {
 //            startPage<ListActivity>()
+
+            LoginActivity::class.startForResult({}){ code, data ->
+
+            }
 
         }
 

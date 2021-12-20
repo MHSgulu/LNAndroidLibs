@@ -1,8 +1,8 @@
-package com.lnkj.android.demo.utils.ext
+package com.lnkj.libs.core
 
-import com.lnkj.android.demo.net.code
-import com.lnkj.android.demo.net.msg
 import com.lnkj.libs.base.BaseViewModel
+import com.lnkj.libs.net.code
+import com.lnkj.libs.net.msg
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart

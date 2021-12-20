@@ -1,4 +1,4 @@
-package com.lnkj.android.demo.net.interceptor
+package com.lnkj.libs.net.interceptor
 
 import com.lnkj.libs.utils.NetworkUtil
 import com.lnkj.libs.utils.application

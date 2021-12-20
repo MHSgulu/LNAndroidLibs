@@ -1,11 +1,11 @@
-package com.lnkj.android.demo.net.interceptor.logging
+package com.lnkj.libs.net.interceptor.logging
 
 import android.text.TextUtils
+import com.lnkj.libs.net.interceptor.logging.LogInterceptor.Companion.isJson
+import com.lnkj.libs.net.interceptor.logging.LogInterceptor.Companion.isXml
 import com.lnkj.libs.utils.CharacterHandler.Companion.jsonFormat
 import com.lnkj.libs.utils.CharacterHandler.Companion.xmlFormat
 import com.lnkj.libs.utils.LogUtil
-import com.lnkj.android.demo.net.interceptor.logging.LogInterceptor.Companion.isJson
-import com.lnkj.android.demo.net.interceptor.logging.LogInterceptor.Companion.isXml
 import okhttp3.MediaType
 import okhttp3.Request
 import java.security.MessageDigest

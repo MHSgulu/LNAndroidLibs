@@ -1,5 +1,6 @@
-package com.lnkj.android.demo.net
+package com.lnkj.libs.net
 
+import com.lnkj.libs.MVVMLibs
 import rxhttp.wrapper.annotation.DefaultDomain
 
 object Url {
@@ -7,7 +8,7 @@ object Url {
     // 默认域名
     @JvmField
     @DefaultDomain()
-    var baseUrl = "http://meimeida.host5.liuniukeji.net/index.php/"
+    var baseUrl = MVVMLibs.httpConfig?.baseUrl
 
     /**
      * 随机网络图片地址

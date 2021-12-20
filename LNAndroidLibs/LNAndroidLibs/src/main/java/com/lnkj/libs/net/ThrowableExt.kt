@@ -1,4 +1,4 @@
-package com.lnkj.android.demo.net
+package com.lnkj.libs.net
 
 import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.TimeoutCancellationException

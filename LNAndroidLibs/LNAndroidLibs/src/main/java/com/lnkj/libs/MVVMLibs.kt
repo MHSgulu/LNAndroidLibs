@@ -8,7 +8,11 @@ import android.os.Handler
 import android.os.Looper
 import android.view.Gravity
 import com.blankj.utilcode.util.ToastUtils
+import com.lnkj.libs.config.HttpConfig
+import com.lnkj.libs.config.HttpConfigImpl
+import com.lnkj.libs.net.RxHttpManager
 import com.lnkj.libs.utils.DirManager
+import com.lnkj.libs.utils.HttpsUtils
 import com.lnkj.libs.utils.initContext
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.header.ClassicsHeader
@@ -24,19 +28,26 @@ object MVVMLibs {
     var sharedPrefName = "LNAndroidLibs"
     var handler = Handler(Looper.getMainLooper())
 
-    fun init(application: Application, isDebug: Boolean = true,
-             defaultLogTag: String = MVVMLibs.defaultLogTag,
-             sharedPrefName: String = MVVMLibs.sharedPrefName){
+    var httpConfig: HttpConfig? = null
+
+    fun init(
+        application: Application, isDebug: Boolean = true,
+        defaultLogTag: String = MVVMLibs.defaultLogTag,
+        sharedPrefName: String = MVVMLibs.sharedPrefName,
+        httpConfig: HttpConfig = HttpConfigImpl()
+    ) {
         this.isDebug = isDebug
         this.defaultLogTag = defaultLogTag
         this.sharedPrefName = sharedPrefName
+        this.httpConfig = httpConfig
         initContext(application)
-        ToastUtils.getDefaultMaker().setGravity(Gravity.CENTER, 0 , 0)
+        ToastUtils.getDefaultMaker().setGravity(Gravity.CENTER, 0, 0)
         ToastUtils.getDefaultMaker().setBgResource(R.drawable._ktx_toast_bg)
         ToastUtils.getDefaultMaker().setTextColor(Color.WHITE)
         initRefresh()
         DirManager.init()
         MMKV.initialize(application)
+        RxHttpManager.init(application)
     }
 
     private fun initRefresh() {

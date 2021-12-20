@@ -1,8 +1,8 @@
-package com.lnkj.android.demo.net
+package com.lnkj.libs.net
 
 import android.app.Application
-import com.lnkj.android.demo.net.interceptor.CacheInterceptor
-import com.lnkj.android.demo.net.interceptor.logging.LogInterceptor
+import com.lnkj.libs.net.interceptor.CacheInterceptor
+import com.lnkj.libs.net.interceptor.logging.LogInterceptor
 import okhttp3.OkHttpClient
 import rxhttp.RxHttpPlugins
 import rxhttp.wrapper.cahce.CacheMode
