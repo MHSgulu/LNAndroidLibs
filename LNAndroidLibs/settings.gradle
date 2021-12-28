@@ -11,3 +11,4 @@ rootProject.name = "LNAndroidLibs"
 include ':app'
 include ':LNAndroidLibs'
 include ':BottomBarLayout'
+include ':GallerySaver'

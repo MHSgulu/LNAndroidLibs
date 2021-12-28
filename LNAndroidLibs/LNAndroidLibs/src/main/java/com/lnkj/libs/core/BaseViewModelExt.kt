@@ -6,8 +6,11 @@ import com.lnkj.libs.net.msg
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart
+import rxhttp.toDownload
+import rxhttp.toFlow
 import rxhttp.toFlowOkResponse
 import rxhttp.toOkResponse
+import rxhttp.wrapper.entity.Progress
 import rxhttp.wrapper.param.*
 
 suspend fun BaseViewModel.okRequest(
@@ -68,4 +71,25 @@ suspend inline fun <reified T : Any> BaseViewModel.requestList(
         }.collect {
             onSuccess(it)
         }
+}
+
+suspend inline fun BaseViewModel.downloadFile(
+    url: String,
+    destPath: String,
+    crossinline onProgress: (progress: Progress) -> Unit,
+    crossinline onError: () -> Unit,
+    crossinline onSuccess: (path: String) -> Unit,
+){
+    RxHttp.get(url)
+        .toFlow(destPath){
+            // 进度回调
+            onProgress(it)
+        }.catch {
+            // 下载失败回调
+            onError()
+        }.collect {
+            // 下载成功回调
+            onSuccess(destPath)
+        }
+
 }

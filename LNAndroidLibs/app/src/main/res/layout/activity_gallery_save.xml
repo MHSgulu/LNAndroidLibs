@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/appBar"
+        layout="@layout/view_topbar" />
+
+    <Button
+        android:id="@+id/btnSaveImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="保存图片到相册"
+        />
+
+    <Button
+        android:id="@+id/btnSaveVideo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="保存视频到相册"
+        />
+
+    <com.fphoenixcorneae.progressbar.SmartProgressBar
+        android:id="@+id/smartProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        app:spb_animated="true"
+        app:spb_animated_duration="3000"
+        app:spb_border_color="@android:color/holo_red_dark"
+        app:spb_border_width="3dp"
+        app:spb_clockwise="true"
+        app:spb_max="100"
+        app:spb_percent_text_color="@android:color/white"
+        app:spb_percent_text_size="18sp"
+        app:spb_progress="0"
+        app:spb_progress_bar_bg_color="@android:color/darker_gray"
+        app:spb_progress_center_color="@android:color/holo_red_light"
+        app:spb_progress_end_color="@android:color/holo_orange_light"
+        app:spb_progress_start_color="@android:color/holo_blue_light"
+        app:spb_shape_style="SECTOR"
+        app:spb_show_percent_sign="true"
+        app:spb_show_percent_text="true"
+        android:visibility="gone"
+        />
+
+</LinearLayout>
