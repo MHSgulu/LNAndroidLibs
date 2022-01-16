@@ -33,13 +33,11 @@ class GallerySaveActivity : BaseActivity<GallerySaveViewModel, ActivityGallerySa
 //				.dismissOnTouchOutside(false)
 //				.asCustom(downloadDialog)
 //				.show()
-			binding.smartProgressBar.visible()
 			vm.downImage()
 		}
 
 		binding.btnSaveVideo.clickWithTrigger {
 			vm.downVideo()
-			binding.smartProgressBar.visible()
 		}
 	}
 
@@ -63,38 +61,38 @@ class GallerySaveActivity : BaseActivity<GallerySaveViewModel, ActivityGallerySa
 
 		vm.progressLiveData.observe(this){
 			print(it)
-			binding.smartProgressBar.setProgress(it.toFloat())
-			if(it == 100){
-				binding.smartProgressBar.gone()
-			}
+//			binding.smartProgressBar.setProgress(it.toFloat())
+//			if(it == 100){
+//				binding.smartProgressBar.gone()
+//			}
 		}
 
 		vm.errorLiveData.observe(this){
 			toast("图片下载失败")
-			binding.smartProgressBar.gone()
+//			binding.smartProgressBar.gone()
 		}
 
 		vm.downloadPathLiveData.observe(this){
-			binding.smartProgressBar.gone()
+//			binding.smartProgressBar.gone()
 			GalleryUtils.saveImageToGalleryWithUrl(this, it){
 				toast("图片保存成功")
 			}
 		}
 
 		vm.progressVideoLiveData.observe(this){
-			binding.smartProgressBar.setProgress(it.toFloat())
-			if(it == 100){
-				binding.smartProgressBar.gone()
-			}
+//			binding.smartProgressBar.setProgress(it.toFloat())
+//			if(it == 100){
+//				binding.smartProgressBar.gone()
+//			}
 		}
 
 		vm.errorVideoLiveData.observe(this){
 			toast("视频下载失败")
-			binding.smartProgressBar.gone()
+//			binding.smartProgressBar.gone()
 		}
 
 		vm.downloadVideoPathLiveData.observe(this){
-			binding.smartProgressBar.gone()
+//			binding.smartProgressBar.gone()
 			GalleryUtils.saveVideoToGallery(this, it){
 				toast("视频保存成功")
 			}
