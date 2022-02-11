@@ -16,18 +16,6 @@ def getRepositoryPassword() {
     return "zICr)nGuwh9-"
 }
 
-def getVersion() {
-    return "0.0.1-SNAPSHOT"
-}
-
-def getRepositoryUrl() {
-    if (getVersion() != null && getVersion().toLowerCase().endsWith("snapshot")) {
-        return getSnapshotRepositoryUrl()
-    } else {
-        return getReleaseRepositoryUrl()
-    }
-}
-
 task sourcesJar(type: Jar) {
     classifier = 'sources'
     from android.sourceSets.main.java.srcDirs
@@ -38,7 +26,7 @@ publishing {
         PublishAndroidAssetLibrary(MavenPublication) {
             groupId 'com.lnkj.libs'
             artifactId 'LNAndroidLibs'
-            version '0.0.1-SNAPSHOT'
+            version version
             afterEvaluate {
                 artifact bundleReleaseAar
             }
@@ -64,24 +52,29 @@ publishing {
             }
         }
     }
+}
+
+def getRepositoryUrl() {
+    if (version != null && version.toLowerCase().endsWith("snapshot")) {
+        return getSnapshotRepositoryUrl()
+    } else {
+        return getReleaseRepositoryUrl()
+    }
+}
+
+boolean isJenkinsBuild = 0 != (System.getenv("BUILD_NUMBER") as Integer ?: 0)
+String localMavenRepoPath = hasProperty("LOCAL_REPO") ? getProperty("LOCAL_REPO") : "${rootDir}/outputs/android/maven"
+
+println("isJenkinsBuild=$isJenkinsBuild,repo=$localMavenRepoPath")
 
 
-
-
-    boolean isJenkinsBuild = 0 != (System.getenv("BUILD_NUMBER") as Integer ?: 0)
-    String localMavenRepoPath = hasProperty("LOCAL_REPO") ? getProperty("LOCAL_REPO") : "${rootDir}/outputs/android/maven"
-
-    println("isJenkinsBuild=$isJenkinsBuild,repo=$localMavenRepoPath")
-
-
-    publishing {
-        repositories {
-            maven {
-                url getRepositoryUrl()
-                credentials {
-                    username = getRepositoryUsername()
-                    password = getRepositoryPassword()
-                }
+publishing {
+    repositories {
+        maven {
+            url getRepositoryUrl()
+            credentials {
+                username = getRepositoryUsername()
+                password = getRepositoryPassword()
             }
         }
     }
