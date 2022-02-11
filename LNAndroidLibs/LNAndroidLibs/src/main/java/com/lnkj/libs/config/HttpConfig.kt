@@ -19,4 +19,10 @@ interface HttpConfig {
     // 请求失败code
     fun handlerNetworkError(code: Int)
 
+    // 公共参数
+    fun httpCommonParams(): Map<String, Any> = emptyMap()
+
+    fun httpRequestHeader(): Map<String, String> = emptyMap()
+
+
 }

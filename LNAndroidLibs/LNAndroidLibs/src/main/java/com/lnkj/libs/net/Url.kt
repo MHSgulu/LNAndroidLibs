@@ -17,7 +17,7 @@ object Url {
      * @param key String
      * @return String
      */
-    fun randomImageUrl(width: Int = 100, height: Int = 100, key: String = "LoveBusiness"): String{
+    fun randomImageUrl(width: Int = 100, height: Int = 100, key: String = "LNAndroidLibs"): String{
         return "http://placeimg.com/$width/$height/${key.hashCode().toString() + key.toString()}"
     }
 
