@@ -38,7 +38,7 @@ publishing {
         PublishAndroidAssetLibrary(MavenPublication) {
             groupId 'com.lnkj.libs'
             artifactId 'LNAndroidLibs'
-            version getVersion()
+            version '0.0.1-SNAPSHOT'
             afterEvaluate {
                 artifact bundleReleaseAar
             }
