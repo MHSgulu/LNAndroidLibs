@@ -47,7 +47,6 @@ object MVVMLibs {
         initRefresh()
         DirManager.init()
         MMKV.initialize(application)
-        RxHttpManager.init(application)
     }
 
     private fun initRefresh() {
