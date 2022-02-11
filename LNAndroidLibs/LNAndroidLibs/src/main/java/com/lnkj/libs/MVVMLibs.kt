@@ -9,7 +9,6 @@ import android.view.Gravity
 import com.blankj.utilcode.util.ToastUtils
 import com.lnkj.libs.config.HttpConfig
 import com.lnkj.libs.config.HttpConfigImpl
-import com.lnkj.libs.net.HttpManager
 import com.lnkj.libs.utils.DirManager
 import com.lnkj.libs.utils.initContext
 import com.scwang.smart.refresh.footer.ClassicsFooter
