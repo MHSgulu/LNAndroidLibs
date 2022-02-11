@@ -5,9 +5,13 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         jcenter() // Warning: this repository is going to shut down soon
+        maven {
+            url 'https://github.com/psiegman/mvn-repo/raw/master/releases'
+        }
     }
 }
 rootProject.name = "LNAndroidLibs"
 include ':app'
 include ':LNAndroidLibs'
 include ':BottomBarLayout'
+include ':GallerySaver'

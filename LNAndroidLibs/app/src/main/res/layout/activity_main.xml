@@ -5,21 +5,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/c_fb"
     android:gravity="center_horizontal"
     tools:context=".ui.page.main.MainActivity">
 
-   <Button
-       android:id="@+id/btn_net_kotlin"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:text="网络请求-kotlin"
-       />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        >
 
-    <Button
-        android:id="@+id/btn_net_java"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="网络请求-java"
+        <com.noober.background.view.BLEditText
+            android:id="@+id/etSearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginVertical="5dp"
+            android:background="@null"
+            app:bl_corners_radius="20dp"
+            app:bl_solid_color="#ededed"
+            android:hint="请输入功能模块"
+            android:paddingHorizontal="10dp"
+            android:textSize="14sp"
+            android:imeOptions="actionSearch"
+            />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         />
 
 </LinearLayout>

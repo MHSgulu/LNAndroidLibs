@@ -32,6 +32,22 @@ open class ResponseParser<T> : TypeParser<T> {
             return Any() as T
         }
 
+        if (code == MVVMLibs.httpConfig?.successCode && types[0] === String::class.java) {
+            return jsonObject.getString(MVVMLibs.httpConfig?.data) as T
+        }
+
+        if (code == MVVMLibs.httpConfig?.successCode && types[0] === Int::class.java) {
+            return jsonObject.getInteger(MVVMLibs.httpConfig?.data) as T
+        }
+
+        if (code == MVVMLibs.httpConfig?.successCode && types[0] === Double::class.java) {
+            return jsonObject.getDouble(MVVMLibs.httpConfig?.data) as T
+        }
+
+        if (code == MVVMLibs.httpConfig?.successCode && types[0] === Boolean::class.java) {
+            return jsonObject.getBoolean(MVVMLibs.httpConfig?.data) as T
+        }
+
         return GsonUtils.INSTANCE.fromJson(
             jsonObject.getString(MVVMLibs.httpConfig?.data),
             types[0]

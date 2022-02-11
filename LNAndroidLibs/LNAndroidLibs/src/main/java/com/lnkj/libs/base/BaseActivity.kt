@@ -22,7 +22,8 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.impl.LoadingPopupView
 
 
-abstract class BaseActivity<VM: BaseViewModel, VB : ViewBinding>: AppCompatActivity(),IMsa by msa()  {
+abstract class BaseActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompatActivity(),
+    IMsa by msa() {
 
     protected lateinit var vm: VM
         private set
@@ -62,7 +63,7 @@ abstract class BaseActivity<VM: BaseViewModel, VB : ViewBinding>: AppCompatActiv
     open fun initIntent() {}
     abstract fun initView(savedInstanceState: Bundle?)
     abstract fun initData()
-    open fun startObserve(){}
+    open fun startObserve() {}
 
     /**
      * 网络变化监听 子类重写
@@ -80,35 +81,40 @@ abstract class BaseActivity<VM: BaseViewModel, VB : ViewBinding>: AppCompatActiv
     }
 
     private var lastBackPressTime = 0L
+
     /**
      * 两次返回退出Activity
      */
-    protected fun doubleBackToFinish(duration: Long = 2000, toast: String = "再按一次退出") {
+    protected fun doubleBackToFinish(
+        duration: Long = 2000,
+        toast: String = "再按一次退出",
+        onBackPressed: () -> Unit
+    ) {
         if (!FragmentUtils.dispatchBackPress(supportFragmentManager)) {
-            if(System.currentTimeMillis() - lastBackPressTime < duration){
+            if (System.currentTimeMillis() - lastBackPressTime < duration) {
                 ToastUtils.cancel()
-                super.onBackPressed()
-            }else{
+                onBackPressed()
+            } else {
                 lastBackPressTime = System.currentTimeMillis()
                 ToastUtils.showShort(toast)
             }
         }
     }
 
-    fun showLoading(msg: String = "加载中..."){
-        if(loadingDialog == null){
+    fun showLoading(msg: String = "加载中...") {
+        if (loadingDialog == null) {
             loadingDialog = XPopup.Builder(this)
                 .dismissOnBackPressed(false)
                 .dismissOnTouchOutside(false)
                 .asLoading(msg)
         }
-        if(loadingDialog?.isShow == true){
+        if (loadingDialog?.isShow == true) {
             loadingDialog?.dismiss()
         }
         loadingDialog?.show()
     }
 
-    fun dismissLoading(){
+    fun dismissLoading() {
         loadingDialog?.dismiss()
     }
 
