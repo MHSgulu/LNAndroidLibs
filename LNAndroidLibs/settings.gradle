@@ -12,19 +12,19 @@ dependencyResolutionManagement {
             url 'https://maven.aliyun.com/repository/public'
         }
         maven {
-//            credentials {
-//                username '6188db14c596f7c2152794ee'
-//                password 'zICr)nGuwh9-'
-//            }
-            url 'https://packages.aliyun.com/maven/repository/2153597-release-WSo6aw/'
+            credentials {
+                username '606eaa398e4139b4d75018a8'
+                password 'm3DOt91WxhP_'
+            }
+            url 'https://packages.aliyun.com/maven/repository/2092914-release-ZCzD1E/'
         }
-//        maven {
-//            credentials {
-//                username '6188db14c596f7c2152794ee'
-//                password 'zICr)nGuwh9-'
-//            }
-//            url 'https://packages.aliyun.com/maven/repository/2153597-snapshot-zuxgCH/'
-//        }
+        maven {
+            credentials {
+                username '606eaa398e4139b4d75018a8'
+                password 'm3DOt91WxhP_'
+            }
+            url 'https://packages.aliyun.com/maven/repository/2092914-snapshot-eNcuN7/'
+        }
     }
 }
 rootProject.name = "LNAndroidLibs"

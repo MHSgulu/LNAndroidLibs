@@ -1,5 +1,19 @@
 #  LNAndroidLibs
 
+## 必备知识点
+
+### 1. Kotlin基础与进阶
+
+### 2. Kotlin协程与Flow
+
+### 3. ViewModel与LiveData
+
+### 4. RxHttp网络请求库的基本使用
+
+### 5. RxJava3的基本用法(了解)
+
+
+
 ## 1. 准备工作
 
 ### 1.1 启用viewBinding
@@ -27,13 +41,14 @@ dependencyResolutionManagement {
         mavenCentral()
         jcenter() // Warning: this repository is going to shut down soon
         maven {
-            url 'https://github.com/psiegman/mvn-repo/raw/master/releases'
-        }
-        maven {
             url 'https://maven.aliyun.com/repository/public'
         }
         maven {
-            url 'https://packages.aliyun.com/maven/repository/2153597-release-WSo6aw/'
+        		credentials {
+                username '606eaa398e4139b4d75018a8'
+                password 'm3DOt91WxhP_'
+            }
+            url 'https://packages.aliyun.com/maven/repository/2092914-release-ZCzD1E/'
         }
 }
 ```
@@ -175,5 +190,824 @@ class MyApp: Application() {
 }
 ```
 
+```
+<application
+    android:name=".MyApp"
+    // 配置访问http
+    android:networkSecurityConfig="@xml/network_security_config"
+    ....
+    >
+</application>
+```
+
+### 1.7 配置屏幕适配
+
+在AndroidManifest.xml中添加:
+
+```
+<application>
+			<meta-data
+    android:name="android.max_aspect"
+    android:value="2.4" />
+<!--适配华为（huawei）刘海屏-->
+<meta-data
+    android:name="android.notch_support"
+    android:value="true" />
+<!--适配小米（xiaomi）刘海屏-->
+<meta-data
+    android:name="notch.config"
+    android:value="portrait|landscape" />
+    <!--效果图的宽度-->
+<meta-data
+    android:name="design_width_in_dp"
+    android:value="375" />
+    <!--效果图的高度-->
+<meta-data
+    android:name="design_height_in_dp"
+    android:value="812" />
+</application>
+```
+
+### 1.8 创建定制化基类
+
+#### 1.8.1 创建Activity的基类, BaseVMActivity.kt
+
+```
+abstract class BaseVMActivity<VM: BaseViewModel, VB: ViewBinding>: BaseActivity<VM, VB>() {
+
+    companion object {
+        fun isLogin(work: ()->Unit){
+            if(AccountUtils.isLogin()){
+                work.invoke()
+            }else{
+                context.startPage<LoginActivity>()
+            }
+        }
+    }
+
+    var page = 1
+    var isShowing = true
+
+    override fun initImmersionBar() {
+        immersionBar {
+            statusBarDarkFont(true)
+            statusBarColor(R.color.white)
+            titleBarMarginTop(binding.root)
+        }
+    }
+
+    fun isLogin(work: ()->Unit){
+        if(AccountUtils.isLogin()){
+            work.invoke()
+        }else{
+            startPage<LoginActivity>()
+        }
+    }
+
+    override fun showLoading(msg: String) {
+        if(isShowing) {
+            super.showLoading(msg)
+        }
+    }
+
+    override fun dismissLoading() {
+        if (isShowing) {
+            super.dismissLoading()
+        }
+    }
+
+}
+```
+
+#### 1.8.2 创建Fragment的基类, BaseVMFragment.kt
+
+```
+abstract class BaseVMFragment<VM: BaseViewModel, VB: ViewBinding>: BaseFragment<VM, VB>() {
+
+    var page = 1
+    var isShowing = true
+
+    fun isLogin(work: ()->Unit){
+        if(AccountUtils.isLogin()){
+            work.invoke()
+        }else{
+            startPage<LoginActivity>()
+        }
+    }
+
+    override fun showLoading(msg: String) {
+        if(isShowing) {
+            super.showLoading(msg)
+        }
+    }
+
+    override fun dismissLoading() {
+        if (isShowing) {
+            super.dismissLoading()
+        }
+    }
+
+}
+```
+
 ## 2.快速上手
+
+### 2.1 创建一个基础头部View布局view_topbar.xml
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white"
+    >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp">
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="15dp"
+            android:src="@mipmap/com_icon_back_b"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:singleLine="true"
+            android:layout_marginHorizontal="54dp"
+            android:ellipsize="marquee"
+            android:textColor="@color/c_33"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="标题" />
+
+    </FrameLayout>
+</LinearLayout>
+```
+
+### 2.2 创建第一个Activity, 我们以登录界面为例
+
+LoginViewModel:
+
+```
+class LoginViewModel : BaseViewModel() {
+
+    /**
+     * 发送短信验证码
+     */
+    val sendSmsData = StatefulMutableLiveData<Boolean>()
+    fun sendSms(vararg params: Pair<String, Any?>) {
+        rxLifeScope.launch {
+            okRequest("api/Sms/send", *params,
+                onStart = {
+                    sendSmsData.value = StateData.Loading
+                },
+                onError = { msg, code ->
+                    sendSmsData.value = StateData.Error(code, msg)
+                }, onSuccess = {
+                    sendSmsData.value = StateData.Success(true)
+                })
+        }
+    }
+
+    /**
+     * 手机号登录
+     */
+    val loginData = StatefulMutableLiveData<UserBean>()
+    fun login(vararg params: Pair<String, Any?>) {
+        rxLifeScope.launch {
+            request<UserBean>("api/User/mobilelogin", *params,
+                onStart = {
+                    loginData.value = StateData.Loading
+                },
+                onError = { msg, code ->
+                    loginData.value = StateData.Error(code, msg)
+                }, onSuccess = {
+                    loginData.value = StateData.Success(it)
+                })
+        }
+    }
+
+}
+```
+
+activity_login.xml:
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+   	<include
+        android:id="@+id/appBar"
+        layout="@layout/view_topbar" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="70dp"
+                android:layout_marginHorizontal="43dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                >
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@mipmap/login_icon_phone"
+                    />
+
+                <EditText
+                    android:id="@+id/etMobile"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:paddingHorizontal="17dp"
+                    android:hint="请输入手机号"
+                    android:textColor="@color/c_33"
+                    android:textColorHint="@color/c_99"
+                    android:textSize="15sp"
+                    android:inputType="phone"
+                    android:imeOptions="actionNext"
+                    />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/c_f6f8fc"
+                android:layout_marginHorizontal="43dp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="27dp"
+                android:layout_marginHorizontal="43dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                >
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@mipmap/login_icon_yzm"
+                    />
+
+                <EditText
+                    android:id="@+id/etCode"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:paddingHorizontal="17dp"
+                    android:hint="请输入验证码"
+                    android:textColor="@color/c_33"
+                    android:textColorHint="@color/c_99"
+                    android:textSize="15sp"
+                    android:inputType="number"
+                    android:imeOptions="actionDone"
+                    />
+
+                <TextView
+                    android:id="@+id/tvSendCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="获取验证码"
+                    android:gravity="center"
+                    android:textColor="@color/c_134b95"
+                    android:textSize="15sp"
+                    />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/c_f6f8fc"
+                android:layout_marginHorizontal="43dp"
+                />
+
+            <com.noober.background.view.BLButton
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="56dp"
+                android:layout_marginHorizontal="43dp"
+                app:bl_corners_radius="43dp"
+                app:bl_solid_color="@color/c_134b95"
+                android:text="登录"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>
+```
+
+
+
+LoginActivity:
+
+```
+class LoginActivity : BaseVMActivity<LoginViewModel, ActivityLoginBinding>() {
+
+    override fun initView(savedInstanceState: Bundle?) {
+
+				binding.appBar.ivBack.clickWithTrigger { finish() }
+        binding.appBar.tvTitle.text = "登录"
+
+        binding.tvSendCode.clickWithTrigger {
+            val phone = binding.etMobile.text.toString().trim()
+            if(phone.isEmpty()){
+                toast("请输入手机号")
+                return@clickWithTrigger
+            }
+
+            if(!RegexUtils.isMobileSimple(phone)){
+                toast("请输入有效手机号")
+                return@clickWithTrigger
+            }
+            binding.tvSendCode.isEnabled = false
+            vm.sendSms("mobile" to phone, "event" to "mobilelogin")
+        }
+
+        binding.btnLogin.clickWithTrigger {
+            val phone = binding.etMobile.text.toString().trim()
+            val code = binding.etCode.text.toString().trim()
+            if(phone.isEmpty()){
+                toast("请输入手机号")
+                return@clickWithTrigger
+            }
+
+            if(!RegexUtils.isMobileSimple(phone)){
+                toast("请输入有效手机号")
+                return@clickWithTrigger
+            }
+
+            if(code.isEmpty()){
+                toast("请输入验证码")
+                return@clickWithTrigger
+            }
+            vm.login("mobile" to phone, "captcha" to code)
+        }
+
+        binding.llWechatLogin.clickWithTrigger {
+            startPage<BindPhoneActivity>()
+        }
+
+    }
+
+    override fun initData() {
+    }
+
+    override fun startObserve() {
+
+        vm.sendSmsData.observeState(this){
+            onLoading = {
+                showLoading()
+            }
+            onError = {code, msg ->
+                dismissLoading()
+                toast(msg)
+            }
+            onSuccess = {
+                dismissLoading()
+                CountDownWorker(this@PhoneLoginActivity, onChange = {
+                    binding.tvSendCode.text = "${it}S"
+                }){
+                    binding.tvSendCode.text = "重新获取"
+                    binding.tvSendCode.isEnabled = true
+                }.start()
+            }
+        }
+
+        vm.loginData.observeState(this){
+            onLoading = {
+                showLoading()
+            }
+            onError = {code, msg ->
+                dismissLoading()
+                toast(msg)
+            }
+            onSuccess = {
+                dismissLoading()
+                AccountUtils.saveUser(it!!)
+                AccountUtils.saveToken(it.token)
+                if(it.nickname.isEmpty() || it.avatar.isEmpty()){
+                    startPage<BasicUserInfoActivity>()
+                }
+                finish()
+            }
+        }
+
+    }
+
+}
+```
+
+### 2.3 第一个列表界面
+
+ViewModel:
+
+```
+class BookListViewModel : BaseViewModel() {
+
+    /**
+     * 获取往期书单列表
+     */
+    val getAllBookListData = StatefulMutableLiveData<MutableList<HomeBean.Books>>()
+    fun getAllBookList(vararg params: Pair<String, Any?>) {
+        rxLifeScope.launch {
+            request<MutableList<HomeBean.Books>>("api/BookList/getAllBookList", *params,
+                onStart = {
+                    getAllBookListData.value = StateData.Loading
+                },
+                onError = { msg, code ->
+                    getAllBookListData.value = StateData.Error(code, msg)
+                }, onSuccess = {
+                    getAllBookListData.value = StateData.Success(it)
+                })
+        }
+    }
+
+}
+```
+
+layout:
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include 
+        layout="@layout/view_topbar"
+        android:id="@+id/appBar"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/c_ee"
+        />
+
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+</LinearLayout>
+```
+
+Adapter布局:
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginTop="16dp">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvTitle"
+                android:text="触摸屏使用技术与工程应用-自从化技术丛书"
+                android:textColor="@color/c_33"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:maxLines="2"
+                android:ellipsize="end"
+                />
+
+            <TextView
+                android:id="@+id/tvContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="《电工实战：操作技能必备…"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/c_a9"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"
+                />
+
+            <TextView
+                android:id="@+id/tvBookNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="共12本"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/c_7d"
+                android:textSize="12sp"
+                />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/rivImage"
+            android:layout_width="160dp"
+            android:layout_height="90dp"
+            app:riv_corner_radius="4dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="16dp"
+            android:scaleType="centerCrop"
+            />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/c_eff2f3"
+        android:layout_marginHorizontal="16dp"
+        />
+
+</LinearLayout>
+```
+
+Adapter:
+
+```
+class BookListAdapter(data: MutableList<Any>) : BaseBindingQuickAdapter<Any, AdapterBookListBinding>(-1,data) {
+    init {
+        addData(Any())
+        addData(Any())
+        addData(Any())
+        addData(Any())
+        addData(Any())
+        addData(Any())
+        addData(Any())
+        addData(Any())
+        addData(Any())
+    }
+    override fun convert(holder: BaseBindingHolder, item: Any) {
+       holder.getViewBinding<AdapterBookListBinding>().apply {
+           
+       }
+    }
+}
+```
+
+
+
+Activity:
+
+```
+class BookListActivity : BaseVMActivity<BookListViewModel, ActivityBookListBinding>() {
+
+    private val data = arrayListOf<HomeBean.Books>()
+    private val adapter = BookListAdapter(data)
+
+    override fun initView(savedInstanceState: Bundle?) {
+        binding.appBar.ivBack.clickWithTrigger { finish() }
+        binding.appBar.tvTitle.text = "往期书单"
+
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = adapter
+
+        adapter.setOnItemClick { view, position ->
+            val item = adapter.getItem(position)
+            BookListDetailsActivity.launch(this, item.id)
+        }
+
+        binding.refreshLayout.apply {
+            setOnRefreshListener {
+                page = 1
+                isShowing = false
+                vm.getAllBookList("page" to page)
+            }
+
+            setOnLoadMoreListener {
+                page ++
+                isShowing = false
+                vm.getAllBookList("page" to page)
+            }
+        }
+
+    }
+
+    override fun initData() {
+        isShowing = true
+        page = 1
+        vm.getAllBookList("page" to page)
+    }
+
+    override fun startObserve() {
+        vm.getAllBookListData.observeState(this){
+            onLoading = {showLoading()}
+            onError = {code, msg ->
+                dismissLoading()
+                toast(msg)
+                binding.refreshLayout.setupData(emptyList(), data, adapter, page)
+            }
+            onSuccess = {
+                dismissLoading()
+                binding.refreshLayout.setupData(it, data, adapter, page)
+            }
+        }
+    }
+
+}
+```
+
+## 3. 网络请求 模板
+
+### 3.1 状态请求
+
+快捷键: rho
+
+模板代码:
+
+```
+/**
+ * $RETURN$
+ */
+val $NAME$Data = StatefulMutableLiveData<Boolean>()
+fun $NAME$(vararg params: Pair<String, Any?>) {
+    rxLifeScope.launch {
+        okRequest("", *params,
+            onStart = {
+                $NAME$Data.value = StateData.Loading
+            },
+            onError = { msg, code ->
+                $NAME$Data.value = StateData.Error(code, msg)
+            }, onSuccess = {
+                $NAME$Data.value = StateData.Success(true)
+            })
+    }
+}
+```
+
+处理相应:
+
+```
+        vm.sendSmsData.observeState(this){
+            onLoading = {
+                showLoading()
+            }
+            onError = {code, msg ->
+                dismissLoading()
+                toast(msg)
+            }
+            onSuccess = {
+                dismissLoading()
+                // 成功的处理
+            }
+        }
+```
+
+### 3.2 单数据源请求
+
+快捷键: rh
+
+模板代码:
+
+```
+/**
+ * $RETURN$
+ */
+val $NAME$Data = StatefulMutableLiveData<$CLASS$>()
+fun $NAME$(vararg params: Pair<String, Any?>) {
+    rxLifeScope.launch {
+        request<$CLASS$>("", *params,
+            onStart = {
+                $NAME$Data.value = StateData.Loading
+            },
+            onError = { msg, code ->
+                $NAME$Data.value = StateData.Error(code, msg)
+            }, onSuccess = {
+                $NAME$Data.value = StateData.Success(it)
+            })
+    }
+}
+```
+
+
+
+处理响应:
+
+```
+vm.loginData.observeState(this){
+            onLoading = {
+                showLoading()
+            }
+            onError = {code, msg ->
+                dismissLoading()
+                toast(msg)
+            }
+            onSuccess = { user->
+                dismissLoading()
+                // 成功的处理
+            }
+        }
+```
+
+
+
+### 3.3 列表数据源请求
+
+快捷键: rh
+
+模板代码:
+
+```
+/**
+ * $RETURN$
+ */
+val $NAME$Data = StatefulMutableLiveData<$CLASS$>()
+fun $NAME$(vararg params: Pair<String, Any?>) {
+    rxLifeScope.launch {
+        request<$CLASS$>("", *params,
+            onStart = {
+                $NAME$Data.value = StateData.Loading
+            },
+            onError = { msg, code ->
+                $NAME$Data.value = StateData.Error(code, msg)
+            }, onSuccess = {
+                $NAME$Data.value = StateData.Success(it)
+            })
+    }
+}
+```
+
+
+
+处理响应:
+
+```
+vm.listData.observeState(this){
+            onLoading = {
+                showLoading()
+            }
+            onError = {code, msg ->
+                dismissLoading()
+                toast(msg)
+            }
+            onSuccess = { list->
+                dismissLoading()
+                // 成功的处理
+            }
+        }
+```
+
+## 4 辅助功能
+
+### 4.1 事件总线
 

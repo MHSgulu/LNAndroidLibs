@@ -99,8 +99,8 @@ dependencies {
     api 'com.github.liujingxing.rxlife:rxlife-rxjava3:2.2.1' //管理RxJava3生命周期，页面销毁，关闭请求
 
     //下拉刷新库 https://github.com/scwang90/SmartRefreshLayout
-    api  'com.scwang.smart:refresh-layout-kernel:2.0.3'
-    api  'com.scwang.smart:refresh-header-classics:2.0.3'
+    api 'com.scwang.smart:refresh-layout-kernel:2.0.3'
+    api 'com.scwang.smart:refresh-header-classics:2.0.3'
     api 'com.scwang.smart:refresh-footer-classics:2.0.3'
 
     //recycleview管理 https://github.com/CymChad/BaseRecyclerViewAdapterHelper
@@ -113,8 +113,6 @@ dependencies {
     api 'jp.wasabeef:glide-transformations:4.1.0'//高斯模糊
 
     api 'com.github.JessYanCoding:AndroidAutoSize:v1.2.1'
-
-    api 'com.alibaba:fastjson:1.2.76'
 
     api 'com.google.android.flexbox:flexbox:3.0.0'
 

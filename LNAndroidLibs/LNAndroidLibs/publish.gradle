@@ -1,19 +1,19 @@
 apply plugin: 'maven-publish'
 
 def getReleaseRepositoryUrl() {
-    return "https://packages.aliyun.com/maven/repository/2153597-release-WSo6aw/"
+    return "https://packages.aliyun.com/maven/repository/2092914-release-ZCzD1E/"
 }
 
 def getSnapshotRepositoryUrl() {
-    return "https://packages.aliyun.com/maven/repository/2153597-snapshot-zuxgCH/"
+    return "https://packages.aliyun.com/maven/repository/2092914-snapshot-eNcuN7/"
 }
 
 def getRepositoryUsername() {
-    return "6188db14c596f7c2152794ee"
+    return "606eaa398e4139b4d75018a8"
 }
 
 def getRepositoryPassword() {
-    return "zICr)nGuwh9-"
+    return "m3DOt91WxhP_"
 }
 
 task sourcesJar(type: Jar) {
