@@ -10,6 +10,7 @@ import com.lnkj.android.demo.databinding.ActivityMainBinding
 import com.lnkj.libs.base.BaseActivity
 import com.lnkj.libs.core.setOnItemClick
 import com.lnkj.libs.utils.startPage
+import com.lnkj.libs.utils.startPageForResult
 
 /**
  *  
@@ -36,7 +37,6 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
 			data.addAll(list)
 			adapter.notifyDataSetChanged()
 		}
-
 	}
 
 	override fun initData() {
