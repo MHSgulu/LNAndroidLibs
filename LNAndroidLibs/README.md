@@ -2,17 +2,59 @@
 
 ## 必备知识点
 
-### 1. Kotlin基础与进阶
+### 1. [Kotlin基础与进阶](https://book.kotlincn.net/)
 
-### 2. Kotlin协程与Flow
+### 2. [Kotlin协程与Flow](https://book.kotlincn.net/text/coroutines-overview.html)
 
 ### 3. ViewModel与LiveData
 
-### 4. RxHttp网络请求库的基本使用
+[LiveData 概览  | Android 开发者  | Android Developers (google.cn)](https://developer.android.google.cn/topic/libraries/architecture/livedata)
 
-### 5. RxJava3的基本用法(了解)
+[ViewModel 概览  | Android 开发者  | Android Developers (google.cn)](https://developer.android.google.cn/topic/libraries/architecture/viewmodel)
 
+### 4. ViewBinding
 
+[视图绑定  | Android 开发者  | Android Developers (google.cn)](https://developer.android.google.cn/topic/libraries/view-binding)
+
+### 5. RxHttp网络请求库的基本使用
+
+[rxhttp/README_zh.md at master · liujingxing/rxhttp (github.com)](https://github.com/liujingxing/rxhttp/blob/master/README_zh.md)
+
+[RxHttp + Flow 三步搞定任意请求 - 掘金 (juejin.cn)](https://juejin.cn/post/7017604875764629540)
+
+[RxHttp 让你眼前一亮的Http请求框架 - 掘金 (juejin.cn)](https://juejin.cn/post/6844904016380428302)
+
+[RxHttp ，比Retrofit 更优雅的协程体验 - 掘金 (juejin.cn)](https://juejin.cn/post/6844904100090347528)
+
+[RxHttp 完美适配Android 10/11 上传/下载/进度监听 - 掘金 (juejin.cn)](https://juejin.cn/post/6884986439587594247)
+
+[RxHttp 全网Http缓存最优解 - 掘金 (juejin.cn)](https://juejin.cn/post/6844904029219192845)
+
+[Android 史上最优雅的实现文件上传、下载及进度的监听 - 掘金 (juejin.cn)](https://juejin.cn/post/6844903839036882957)
+
+[RxHttp 一条链发送请求之强大的数据解析功能（二） - 掘金 (juejin.cn)](https://juejin.cn/post/6844903830136553485)
+
+[RxHttp 一条链发送请求之强大的Param类（三） - 掘金 (juejin.cn)](https://juejin.cn/post/6844903831931715597)
+
+[RxHttp 一条链发送请求之注解处理器 Generated API - 掘金 (juejin.cn)](https://juejin.cn/post/6844903831935926280)
+
+[Android OkHttp 史上最优雅的设置baseUrl - 掘金 (juejin.cn)](https://juejin.cn/post/6844903847698104333)
+
+[RxLife 史上最优雅的管理RxJava生命周期 - 掘金 (juejin.cn)](https://juejin.cn/post/6844903858796249096)
+
+[30秒上手新一代Http请求神器RxHttp - 掘金 (juejin.cn)](https://juejin.cn/post/6844903862344613901)
+
+[RxHttp 优雅的实现请求串行与并行 - 掘金 (juejin.cn)](https://juejin.cn/post/6844903870074732551)
+
+[可怕！RxHttp2.0重大更新！协程发请求，原来如此简单 - 掘金 (juejin.cn)](https://juejin.cn/post/6844904135293141000)
+
+[RxHttp 2000+star，协程请求，仅需三步 - 掘金 (juejin.cn)](https://juejin.cn/post/6856550856796897287)
+
+[实战：5分钟搞懂OkHttp断点上传 - 掘金 (juejin.cn)](https://juejin.cn/post/6986413030032539684)
+
+### 6. RxJava3的基本用法(了解)
+
+[Rxjava3文档级教程一： 介绍和基本使用 - 掘金 (juejin.cn)](https://juejin.cn/post/7020665574682263560)
 
 ## 1. 准备工作
 
@@ -1007,7 +1049,477 @@ vm.listData.observeState(this){
         }
 ```
 
-## 4 辅助功能
+## 4 其他方式的网络请求
 
-### 4.1 事件总线
+### 4.1 Kotlin
+
+```
+/**
+ *	无参返回的请求
+ * @param url String
+ * @param tag String
+ * @param params Array<out Pair<String, Any?>>
+ * @param onStart Function0<Unit>
+ * @param onSuccess Function0<Unit>
+ * @param onError Function2<[@kotlin.ParameterName] String, [@kotlin.ParameterName] String, Unit>
+ * @return Any
+ */
+fun okRequest(
+    url: String,
+    tag: String,
+    vararg params: Pair<String, Any?>,
+    onStart: () -> Unit = {},
+    onSuccess: () -> Unit = {},
+    onError: (msg: String, code: String) -> Unit = { msg, code -> }
+): Any {
+    return RxHttp.postForm(url)
+        .tag(tag)
+        .addAll(params.toMap())
+        .asResponse<Any>()
+        .doOnSubscribe {
+            onStart()
+        }
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe({
+            onSuccess()
+        }, {
+            val msg = it.msg
+            val code = it.code
+            onError(msg, code)
+        })
+}
+
+// 使用示例
+val params = arrayOf<Pair<String, Any>>()
+okRequest(
+    "url",
+    "tag",
+    *params,
+    onStart = {},
+    onError = { msg, code -> },
+    onSuccess = {})
+
+/**
+ * 有参数返回的请求
+ * @param url String
+ * @param params Array<out Pair<String, Any?>>
+ * @param onStart Function0<Unit>
+ * @param onSuccess Function1<[@kotlin.ParameterName] T, Unit>
+ * @param onError Function2<[@kotlin.ParameterName] String, [@kotlin.ParameterName] String, Unit>
+ */
+inline fun <reified T : Any> request(
+    url: String,
+    tag: String,
+    vararg params: Pair<String, Any?>,
+    crossinline onStart: () -> Unit,
+    crossinline onSuccess: (data: T) -> Unit,
+    crossinline onError: (msg: String, code: String) -> Unit
+) {
+    RxHttp.postForm(url)
+        .tag(tag)
+        .addAll(params.toMap())
+        .asResponse<T>()
+        .doOnSubscribe {
+            onStart()
+        }
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe({
+            onSuccess(it)
+        }, {
+            val msg = it.msg
+            val code = it.code
+            onError(msg, code)
+        })
+}
+
+val params = arrayOf<Pair<String, Any>>()
+request<String>("url",
+	"tag",
+	*params,
+	onStart = {},
+	onError = { msg, code -> },
+	onSuccess = {})
+	
+	// 取消指定tag的请求
+	cancelRequest("tag")
+	// 取消所有请求
+	cancelAllRequest()
+```
+
+### 4.2 Java
+
+```
+// 无参返回请求
+Pair<String, Object>[] params = new Pair[]{
+        new Pair<String, Object>("key", "value")
+};
+BaseViewModelExtKt.okRequest("url", "tag", params,
+        () -> {
+            // 加载中
+            return null;
+        }, () -> {
+            // 请求成功
+            return null;
+        }, (msg, code) -> {
+            // 请求失败
+            return null;
+        });
+        
+// 有参返回的请求
+Map<String, Object> params1 = new HashMap<>();
+RxHttp.postForm("")
+        .tag("tag")
+        .addAll(params1)
+        .asResponse(String.class)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnSubscribe(disposable -> {
+            // 加载中
+        })
+        .subscribe(result -> {
+            // 请求成功 result返回结果
+        }, throwable -> {
+            // 请求失败
+            String msg = ThrowableExtKt.getMsg(throwable);
+            String code = ThrowableExtKt.getCode(throwable);
+            
+        });
+
+// 列表参数的返回请求
+Map<String, Object> params1 = new HashMap<>();
+RxHttp.postForm("")
+        .tag("tag")
+        .addAll(params1)
+        .asResponseList(String.class)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnSubscribe(disposable -> {
+            // 加载中
+        })
+        .subscribe(result -> {
+            // 请求成功 result返回结果
+        }, throwable -> {
+            // 请求失败
+            String msg = ThrowableExtKt.getMsg(throwable);
+            String code = ThrowableExtKt.getCode(throwable);
+            
+        });
+```
+
+
+
+## 5. 事件总线 
+
+[JeremyLiao/LiveEventBus: EventBus for Android，消息总线，基于LiveData，具有生命周期感知能力，支持Sticky，支持AndroidX，支持跨进程，支持跨APP (github.com)](https://github.com/JeremyLiao/LiveEventBus)
+
+
+
+## 6. 路由跳转
+
+```
+// 无参跳转
+context.startPage<MainActivity>()
+// 有参数的跳转
+context.startPage<MainActivity>("id" to 1)
+// 无参跳转并等待返回参数
+context.startPageForResult<MainActivity>{code, data -> }
+// 有参数跳转并等待返回
+context.startPageForResult<MainActivity>("id" to 1){code, data -> }
+// 结束界面并返回参数给上一个界面
+context.setResult(code, intent)
+context.finish()
+// 前往APP详情页面, 传递包名
+context.goToAppInfoPage(packageName)
+// 跳转到日期和时间页
+Context.goToDateAndTimePage()
+// 跳转到语言页面
+Context.goToLanguagePage()
+// 跳转到辅助功能页
+Context.goToAccessibilitySetting()
+Context.installApk(apkFile: File)
+// 使用浏览器访问特定的url
+Context.openBrowser(url: String) 
+Context.browse(url: String, newTask: Boolean = false)
+// 访问应用商店中的应用
+Context.openInAppStore(packageName: String = this.packageName)
+// 发送邮件
+Context.sendEmail(email: String, subject: String?, text: String?)
+```
+
+## 7. 公共Widget
+
+### 7.1 字母索引
+
+```
+com.lnkj.libs.widget.LetterIndexBar
+```
+
+### 7.2 根据设置的图片大小，自动按比例限制在最大宽高范围内的ImageView
+
+```
+com.lnkj.libs.widget.LimitImageView
+```
+
+### 7.3 支持一段布局进行滚动的布局，
+
+```
+com.lnkj.libs.widget.MarqueeLayout    // 继承自FrameLayout
+```
+
+### 7.4 支持一段文字进行滚动的View
+
+```
+com.lnkj.libs.widget.MarqueeTextView
+```
+
+### 7.5 ViewPager2嵌套时内部的将无法滑动，使用这个类包裹一下即可
+
+```
+NestedViewPager2Wrapper
+```
+
+### 7.6 按指定宽高比自动设置高度的ImageView，默认情况下根据图片的内容来自适应
+
+```
+RatioImageView
+```
+
+### 7.7 通用标题栏
+
+```
+TitleBar
+```
+
+## 8.辅助工具
+
+### 8.1 应用商店 AppStoreUtils
+
+```
+// 获取跳转到应用商店的 Intent
+getAppStoreIntent()
+// 获取跳转到应用商店的 Intent isIncludeGooglePlayStore 是否包括 Google Play 商店
+getAppStoreIntent(boolean isIncludeGooglePlayStore)
+// 获取跳转到应用商店的 Intent
+getAppStoreIntent(final String packageName)
+// 获取跳转到应用商店的 Intent
+// 优先跳转到手机自带的应用市场
+Intent getAppStoreIntent(final String packageName, boolean isIncludeGooglePlayStore)
+```
+
+### 8.2 缓存工具类CacheUtil
+
+```
+// 获取缓存大小
+getTotalCacheSize(context: Context)
+// 清除缓存
+clearAllCache(context: Context)
+// 格式化存储大小
+getFormatSize(size: Double)
+```
+
+### 8.4 CountDownWorker: 精准倒计时实现
+
+```
+/**
+ * 精准倒计时实现，如果传入了LifecycleOwner，将自动cancel，无需调用cancel
+ * 系统的CountDownTimer以时间戳作为任务值，容易有误差
+ * @param total 总步数
+ * @param step 步长
+ * @param countDownInterval 递减时间间隔
+ * @param immediately 是否立即执行onChange，false的话会间隔一个countDownInterval再执行onChange
+ * @param onChange 递减回调
+ * @param onFinish 倒计时结束回调
+ */
+CountDownWorker(owner, total = 60, step = 1, countDownInterval = 1000, immediately = true, onChange = {s -> }, onFinish = {})
+```
+
+### 8.5 DirManager 自动创建常用目录
+
+```
+// 初始化
+DirManager.init()
+// 根目录
+DirManager.rootDir
+// 临时目录
+DirManager.tempDir
+// 下载目录
+DirManager.downloadDir
+// 缓存目录
+DirManager.cacheDir
+// 可以共享给三方的文件目录
+DirManager.shareDir
+```
+
+### 8.6 NetworkUtil  网络工具类
+
+```
+// 网络检测
+NetworkUtil.isNetworkAvailable(Context context)
+// 获取本地IP
+getLocalIpAddress()
+// 获取当前网络状态
+getNetState(Context context)
+is3G(Context context)
+isWifi(Context context)
+is2G(Context context)
+
+```
+
+### 8.7 权限检测: PermissionsCheckUtils
+
+```
+// 判断是否开启定位服务
+locationEnable()
+// 判断是否开启通知
+areNotificationsEnabled()
+// 跳转到通知设置界面
+jumpNotificationsSettings(context: Context, cancel: ()->Unit, confirm: ()->Unit)
+```
+
+### 8.8 拼音相关工具类: PinyinUtils
+
+```
+// 汉字转拼音
+ccs2Pinyin(final CharSequence ccs)
+// 汉字转拼音
+ccs2Pinyin(final CharSequence ccs, final CharSequence split)
+// 获取第一个汉字首字母
+getPinyinFirstLetter(final CharSequence ccs)
+// 获取所有汉字的首字母
+getPinyinFirstLetters(final CharSequence ccs)
+// 根据名字获取姓氏的拼音
+getSurnamePinyin(final CharSequence name)
+// 根据名字获取姓氏的首字母
+getSurnameFirstLetter(final CharSequence name)
+```
+
+### 8.9  SpannableStringUtils
+
+## 9. 常用扩展
+
+### 9.1 通用扩展
+
+```
+// 全局context
+context
+application
+
+// 获取屏幕宽度
+Context.screenWidth
+
+// 获取屏幕高度
+Context.screenHeight
+
+// 判断是否为空 并传入相关操作
+Any?.notNull({t->
+	// 不为空时的操作
+}, {
+	// 为空时的操作
+})
+
+// dp值转换为px
+Context.dp2px(dp: Int)
+View.dp2px(dp: Int)
+
+// px值转换成dp
+Context.px2dp(px: Int)
+View.px2dp(px: Int)
+
+复制文本到粘贴板
+Context.copyToClipboard(text: String, label: String = "JetpackMvvm") {
+
+检查是否启用无障碍服务
+Context.checkAccessibilityServiceEnabled(serviceName: String)
+```
+
+### 9.2 Json相关扩展
+
+```
+T.toJson()
+String.fromJson(): T
+String.fromJsonToList(): List<T>
+Any.fromJson(): T
+Any.fromJsonToList(): List<T>
+```
+
+### 9.3 软键盘相关扩展
+
+```
+Activity.hideSoftInput()
+Fragment.hideSoftInput()
+```
+
+### 9.4 String相关扩展
+
+```
+// 是否为手机号  0开头 12开头的不支持
+String?.isPhone(): Boolean
+// 是否为座机号
+String?.isTel(): Boolean
+// 是否为邮箱号
+String?.isEmail(): Boolean
+```
+
+### 9.5 系统常用服务的扩展
+
+```
+Context.windowManager get() = getSystemService<WindowManager>()
+Context.clipboardManager get() = getSystemService<ClipboardManager>()
+Context.layoutInflater get() = getSystemService<LayoutInflater>()
+Context.activityManager get() = getSystemService<ActivityManager>()
+Context.powerManager get() = getSystemService<PowerManager>()
+Context.alarmManager get() = getSystemService<AlarmManager>()
+Context.notificationManager get() = getSystemService<NotificationManager>()
+Context.keyguardManager get() = getSystemService<KeyguardManager>()
+Context.locationManager get() = getSystemService<LocationManager>()
+Context.searchManager get() = getSystemService<SearchManager>()
+Context.storageManager get() = getSystemService<StorageManager>()
+Context.vibrator get() = getSystemService<Vibrator>()
+Context.connectivityManager get() = getSystemService<ConnectivityManager>()
+Context.wifiManager get() = getSystemService<WifiManager>()
+Context.audioManager get() = getSystemService<AudioManager>()
+Context.mediaRouter get() = getSystemService<MediaRouter>()
+Context.telephonyManager get() = getSystemService<TelephonyManager>()
+Context.sensorManager get() = getSystemService<SensorManager>()
+Context.subscriptionManager get() = getSystemService<SubscriptionManager>()
+Context.carrierConfigManager get() = getSystemService<CarrierConfigManager>()
+Context.inputMethodManager get() = getSystemService<InputMethodManager>()
+Context.uiModeManager get() = getSystemService<UiModeManager>()
+Context.downloadManager get() = getSystemService<DownloadManager>()
+Context.batteryManager get() = getSystemService<BatteryManager>()
+Context.jobScheduler get() = getSystemService<JobScheduler>()
+Context.accessibilityManager get() = getSystemService<AccessibilityManager>()
+```
+
+### 9.6 Intent常用扩展
+
+```
+// 返回安装APK的意图
+Context.getInstallIntent(apkFile: File): Intent?
+// 获取String类型参数  返回非空
+Intent.getString(key: String, default: String = ""): String
+// 为Intent添加参数
+Intent.fillIntentArguments(vararg params: Pair<String, Any?>): Intent
+// Bundle中读取参数, 附带默认值
+Bundle.read(key: String, defaultValue: T): T
+
+// Add the [Intent.FLAG_ACTIVITY_CLEAR_TASK] flag to the [Intent].
+Intent.clearTask()
+// Add the [Intent.FLAG_ACTIVITY_CLEAR_TOP] flag to the [Intent].
+Intent.clearTop()
+// Add the [Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS] flag to the [Intent].
+Intent.excludeFromRecents()
+// Add the [Intent.FLAG_ACTIVITY_MULTIPLE_TASK] flag to the [Intent].
+Intent.multipleTask()
+// Add the [Intent.FLAG_ACTIVITY_NEW_TASK] flag to the [Intent].
+Intent.newTask()
+// Intent.FLAG_ACTIVITY_NO_ANIMATION
+Intent.noAnimation()
+// Intent.FLAG_ACTIVITY_SINGLE_TOP
+Intent.singleTop()
+```
+
+
 

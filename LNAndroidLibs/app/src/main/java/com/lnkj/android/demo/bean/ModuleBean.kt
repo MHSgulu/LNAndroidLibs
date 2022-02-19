@@ -2,7 +2,6 @@ package com.lnkj.android.demo.bean
 
 import android.app.Activity
 import com.lnkj.android.demo.ui.page.gallery.GallerySaveActivity
-import com.lnkj.epublibs.BookListActivity
 
 /**
  *
@@ -19,9 +18,9 @@ val mainDataList = arrayListOf(
     ),
 
     // 电子书
-    ModuleBean(
-        title = "电子书",
-        content = "epub电子书",
-        clzz = BookListActivity::class.java
-    )
+//    ModuleBean(
+//        title = "电子书",
+//        content = "epub电子书",
+//        clzz = BookListActivity::class.java
+//    )
 )
