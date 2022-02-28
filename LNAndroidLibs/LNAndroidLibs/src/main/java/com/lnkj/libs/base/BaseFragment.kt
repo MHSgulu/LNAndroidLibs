@@ -9,10 +9,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
-import com.gyf.immersionbar.components.SimpleImmersionFragment
+import com.gyf.immersionbar.components.SimpleImmersionOwner
 import com.itxca.msa.IMsa
 import com.itxca.msa.msa
 import com.lnkj.libs.core.getVmClazz
@@ -23,7 +24,7 @@ import com.lnkj.libs.utils.ext.util.hideSoftInput
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.impl.LoadingPopupView
 
-abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : SimpleImmersionFragment(),
+abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : Fragment(),
     BaseActivity.MyOnTouchListener, IMsa by msa(){
 
     private val handler = Handler(Looper.myLooper()!!)
@@ -138,15 +139,11 @@ abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : SimpleImmersi
         handler.removeCallbacksAndMessages(null)
     }
 
-    override fun immersionBarEnabled(): Boolean {
-        return false
-    }
-
-    override fun initImmersionBar() {
+    open fun initImmersionBar() {
 
     }
 
-    fun showLoading(msg: String = "加载中...") {
+    open fun showLoading(msg: String = "加载中...") {
         if (loadingDialog == null) {
             loadingDialog = XPopup.Builder(context)
                 .dismissOnBackPressed(false)
@@ -159,7 +156,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : SimpleImmersi
         loadingDialog?.show()
     }
 
-    fun dismissLoading() {
+    open fun dismissLoading() {
         loadingDialog?.dismiss()
     }
 

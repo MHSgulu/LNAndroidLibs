@@ -101,7 +101,7 @@ abstract class BaseActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompatAct
         }
     }
 
-    fun showLoading(msg: String = "加载中...") {
+    open fun showLoading(msg: String = "加载中...") {
         if (loadingDialog == null) {
             loadingDialog = XPopup.Builder(this)
                 .dismissOnBackPressed(false)
@@ -114,7 +114,7 @@ abstract class BaseActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompatAct
         loadingDialog?.show()
     }
 
-    fun dismissLoading() {
+    open fun dismissLoading() {
         loadingDialog?.dismiss()
     }
 
