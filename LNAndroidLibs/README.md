@@ -868,6 +868,11 @@ class BookListActivity : BaseVMActivity<BookListViewModel, ActivityBookListBindi
             val item = adapter.getItem(position)
             BookListDetailsActivity.launch(this, item.id)
         }
+        
+        adapter.setOnItemChildClick(ids = arrayOf(R.id,  )) { view, position ->
+            val item = adapter.getItem(position)
+            BookListDetailsActivity.launch(this, item.id)
+        }
 
         binding.refreshLayout.apply {
             setOnRefreshListener {
@@ -1140,7 +1145,7 @@ request<String>("url",
 	*params,
 	onStart = {},
 	onError = { msg, code -> },
-	onSuccess = {})
+	onSuccess = {it-> })
 	
 	// 取消指定tag的请求
 	cancelRequest("tag")
@@ -1492,6 +1497,7 @@ Context.batteryManager get() = getSystemService<BatteryManager>()
 Context.jobScheduler get() = getSystemService<JobScheduler>()
 Context.accessibilityManager get() = getSystemService<AccessibilityManager>()
 ```
+
 
 ### 9.6 Intent常用扩展
 
