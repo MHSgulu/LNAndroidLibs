@@ -99,9 +99,9 @@ dependencies {
     api 'com.github.liujingxing.rxlife:rxlife-rxjava3:2.2.1' //管理RxJava3生命周期，页面销毁，关闭请求
 
     //下拉刷新库 https://github.com/scwang90/SmartRefreshLayout
-    api 'com.scwang.smart:refresh-layout-kernel:2.0.3'
-    api 'com.scwang.smart:refresh-header-classics:2.0.3'
-    api 'com.scwang.smart:refresh-footer-classics:2.0.3'
+    api 'io.github.scwang90:refresh-layout-kernel:2.0.5'
+    api 'io.github.scwang90:refresh-header-classics:2.0.5'
+    api 'io.github.scwang90:refresh-footer-classics:2.0.5'
 
     //recycleview管理 https://github.com/CymChad/BaseRecyclerViewAdapterHelper
     api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.6'
