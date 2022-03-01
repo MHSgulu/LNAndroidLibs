@@ -40,7 +40,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : Fragment(),
 
     lateinit var mActivity: AppCompatActivity
 
-    private var loadingDialog: LoadingPopupView? = null
+    var loadingDialog: LoadingPopupView? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -148,6 +148,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : Fragment(),
             loadingDialog = XPopup.Builder(context)
                 .dismissOnBackPressed(false)
                 .dismissOnTouchOutside(false)
+                .hasShadowBg(false)
                 .asLoading(msg)
         }
         if (loadingDialog?.isShow == true) {

@@ -30,7 +30,7 @@ abstract class BaseActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompatAct
 
     lateinit var binding: VB
 
-    private var loadingDialog: LoadingPopupView? = null
+    var loadingDialog: LoadingPopupView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,6 +106,7 @@ abstract class BaseActivity<VM : BaseViewModel, VB : ViewBinding> : AppCompatAct
             loadingDialog = XPopup.Builder(this)
                 .dismissOnBackPressed(false)
                 .dismissOnTouchOutside(false)
+                .hasShadowBg(false)
                 .asLoading(msg)
         }
         if (loadingDialog?.isShow == true) {
