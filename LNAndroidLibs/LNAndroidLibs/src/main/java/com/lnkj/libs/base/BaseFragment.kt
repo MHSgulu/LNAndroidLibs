@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
-import com.gyf.immersionbar.components.SimpleImmersionOwner
 import com.itxca.msa.IMsa
 import com.itxca.msa.msa
 import com.lnkj.libs.core.getVmClazz

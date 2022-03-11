@@ -12,7 +12,7 @@ sealed class StateData<out T>{
 }
 
 class ResultBuilder<T>() {
-    var onLading: () -> Unit = {}
+    var onLoading: () -> Unit = {}
     var onSuccess: (data: T?) -> Unit = {}
     var onError: (code: String, msg: String) -> Unit = {code, msg ->  }
 }
@@ -29,7 +29,7 @@ inline fun <T> StatefulLiveData<T>.observeState(
 
     observe(owner) { state ->
         when (state) {
-            is StateData.Loading -> result.onLading.invoke()
+            is StateData.Loading -> result.onLoading.invoke()
             is StateData.Success -> result.onSuccess(state.data)
             is StateData.Error -> result.onError(state.code, state.msg)
         }
