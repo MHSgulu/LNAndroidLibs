@@ -19,7 +19,7 @@ suspend fun BaseViewModel.okRequest(
     vararg params: Pair<String, Any?>,
     onStart: () -> Unit = {},
     onSuccess: () -> Unit = {},
-    onError: (msg: String, code: String) -> Unit = { msg, code -> }
+    onError: (code: String, msg: String) -> Unit = { code, msg -> }
 ): Any {
     return RxHttp.postForm(url)
         .addAll(params.toMap())
@@ -28,7 +28,7 @@ suspend fun BaseViewModel.okRequest(
         .catch {
             val msg = it.msg
             val code = it.code
-            onError(msg, code)
+            onError(code, msg)
         }.collect {
             onSuccess()
         }
@@ -39,7 +39,7 @@ suspend inline fun <reified T : Any> BaseViewModel.request(
     vararg params: Pair<String, Any?>,
     crossinline onStart: () -> Unit,
     crossinline onSuccess: (data: T) -> Unit,
-    crossinline onError: (msg: String, code: String) -> Unit
+    crossinline onError: (code: String, msg: String) -> Unit
 ) {
     RxHttp.postForm(url)
         .addAll(params.toMap())
@@ -48,7 +48,7 @@ suspend inline fun <reified T : Any> BaseViewModel.request(
         .catch {
             val msg = it.msg
             val code = it.code
-            onError(msg, code)
+            onError(code, msg)
         }.collect {
             onSuccess(it)
         }
@@ -59,7 +59,7 @@ suspend inline fun <reified T : Any> BaseViewModel.requestList(
     vararg params: Pair<String, Any?>,
     crossinline onStart: () -> Unit,
     crossinline onSuccess: (data: MutableList<T>) -> Unit,
-    crossinline onError: (msg: String, code: String) -> Unit
+    crossinline onError: (code: String, msg: String) -> Unit
 ) {
     RxHttp.postForm(url)
         .addAll(params.toMap())
@@ -68,7 +68,7 @@ suspend inline fun <reified T : Any> BaseViewModel.requestList(
         .catch {
             val msg = it.msg
             val code = it.code
-            onError(msg, code)
+            onError(code, msg)
         }.collect {
             onSuccess(it)
         }
