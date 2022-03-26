@@ -100,7 +100,7 @@ dependencyResolutionManagement {
 ```
 dependencies {
 	....
-    implementation 'com.lnkj.libs:LNAndroidLibs:0.0.2'
+    implementation 'com.lnkj.libs:LNAndroidLibs:0.0.4.2'
 }
 ```
 
