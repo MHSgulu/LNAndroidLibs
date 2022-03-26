@@ -1,6 +1,6 @@
 # 更新日志
 
-## V 0.0.4
+## V 0.0.4.2
 > 为 Bundle 添加 Bundle.putExtras  扩展方法, 实现给 Bundle 批量添加各种类型的数据
 > 为 Date 添加 Date.age 扩展属性, 实现根据Date获取年龄  
 > 为 ArrayList 添加 ArrayList.deleteIf 扩展方法, 实现根据给定的条件删除列表的数据

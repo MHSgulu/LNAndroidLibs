@@ -93,5 +93,8 @@ fun EditText.clear(){
 }
 
 var EditText.txt: String
-    set(value) = setText(value)
+    set(value) {
+        setText(value)
+        setSelection(value.length)
+    }
     get() = text.toString().trim()

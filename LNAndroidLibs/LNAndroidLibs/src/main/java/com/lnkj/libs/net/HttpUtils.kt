@@ -61,6 +61,7 @@ object HttpUtils {
      * 示例:
      * fun request(){
      *      requestRxJava<Any>("url", *arrayOf())
+     *          .life(this)
      *          .doOnDispose {
      *              // 请求开始  显示加载中
      *          }
