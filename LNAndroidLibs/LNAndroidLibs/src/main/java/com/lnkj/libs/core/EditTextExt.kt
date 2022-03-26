@@ -91,3 +91,7 @@ fun TextView.isTrimEmpty(): Boolean {
 fun EditText.clear(){
     this.setText("")
 }
+
+var EditText.txt: String
+    set(value) = setText(value)
+    get() = text.toString().trim()

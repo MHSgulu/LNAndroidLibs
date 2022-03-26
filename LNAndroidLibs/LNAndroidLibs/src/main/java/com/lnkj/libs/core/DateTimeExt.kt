@@ -35,3 +35,14 @@ fun String.toDateForm(pattern: String = "yyyy-MM-dd HH:mm:ss"): Date?{
     val dateFormat = SimpleDateFormat(pattern)
     return dateFormat.parse(this)
 }
+
+/**
+ * 根据日期计算年龄
+ */
+val Date.age: Int
+    get() {
+        val currentTime = Date().time
+        val difference = currentTime - time
+        val year: Long = 1000 * 60 * 60 * 24 * 365L
+        return (difference / year).toInt()
+    }

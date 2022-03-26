@@ -29,6 +29,7 @@ open class ResponseParser<T> : TypeParser<T> {
         }
 
         if (code == MVVMLibs.httpConfig?.successCode && types[0] === Any::class.java) {
+
             return Any() as T
         }
 
@@ -47,10 +48,14 @@ open class ResponseParser<T> : TypeParser<T> {
         if (code == MVVMLibs.httpConfig?.successCode && types[0] === Boolean::class.java) {
             return jsonObject.getBoolean(MVVMLibs.httpConfig?.data) as T
         }
-
-        return GsonUtils.INSTANCE.fromJson(
-            jsonObject.getString(MVVMLibs.httpConfig?.data),
-            types[0]
-        )  //最后返回data字段
+        try {
+            return GsonUtils.INSTANCE.fromJson(
+                jsonObject.getString(MVVMLibs.httpConfig?.data),
+                types[0]
+            )  //最后返回data字段
+        }catch (e: Exception){
+            e.printStackTrace()
+            throw e
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.lnkj.libs.core
 
 import android.graphics.Rect
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.text.InputFilter
 import android.widget.TextView
@@ -51,3 +52,14 @@ fun TextView.sizeDrawable(size: Int, leftDrawable: Int = 0, topDrawable: Int = 0
 fun TextView.maxLength(max: Int){
     filters = arrayOf<InputFilter>(InputFilter.LengthFilter(max))
 }
+
+// 字体加粗
+var TextView.isBold: Boolean
+    set(value) = if(value) this.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD)) else this.setTypeface(
+        Typeface.defaultFromStyle(Typeface.NORMAL))
+    get() =  this.typeface.isBold
+
+// 直接设置字体颜色
+var TextView.textColor: Int
+    set(value) = setTextColor(resources.getColor(value))
+    get() = throw IllegalArgumentException("不能使用get方法")
